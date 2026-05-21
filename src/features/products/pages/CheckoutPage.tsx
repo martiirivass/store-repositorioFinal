@@ -4,6 +4,7 @@ import { useCartStore } from "../../../store/cartStore";
 import { useCrearPedido, useDirecciones } from "../hooks/usePedidos";
 import { useAuthStore } from "../../../store/authStore";
 import { getProductImage } from "../../../shared/images";
+import { formatARS } from "../../../shared/currency";
 
 export function CheckoutPage() {
   const { items, getTotal, clearCart } = useCartStore();
@@ -47,7 +48,7 @@ export function CheckoutPage() {
   };
 
   return (
-    <div className="max-w-[1280px] mx-auto px-margin-desktop py-2xl">
+    <div className="max-w-[1400px] mx-auto px-margin-desktop py-2xl">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-xl">
         <div className="lg:col-span-7 space-y-lg">
           <h1 className="font-headline-lg text-headline-lg text-on-surface mb-lg">Checkout</h1>
@@ -55,14 +56,14 @@ export function CheckoutPage() {
           <div className="space-y-md">
             {items.map((item) => (
               <div key={item.producto_id} className="bg-surface-container rounded-lg p-md flex items-center gap-lg border border-outline-variant/30">
-                <div className="w-16 h-16 rounded overflow-hidden shrink-0">
-                  <img src={getProductImage(item.producto_id, item.producto_id)} alt={item.nombre} className="w-full h-full object-cover" />
+                <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-surface-container-high">
+                  <img src={item.imagen_url || getProductImage(item.producto_id, item.producto_id)} alt={item.nombre} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-grow">
                   <p className="font-label-lg text-label-lg text-on-surface">{item.nombre}</p>
-                  <p className="font-body-md text-body-md text-on-surface-variant">{item.cantidad}x ${item.precio.toFixed(2)}</p>
+                  <p className="font-body-md text-body-md text-on-surface-variant">{item.cantidad}x {formatARS(item.precio)}</p>
                 </div>
-                <p className="font-label-lg text-label-lg text-primary font-bold">${(item.precio * item.cantidad).toFixed(2)}</p>
+                <p className="font-label-lg text-label-lg text-primary font-bold">{formatARS(item.precio * item.cantidad)}</p>
               </div>
             ))}
           </div>
@@ -118,7 +119,7 @@ export function CheckoutPage() {
             <div className="border-t border-outline-variant/30 pt-xl space-y-md">
               <div className="flex justify-between font-body-md text-body-md text-on-surface-variant">
                 <span>Subtotal</span>
-                <span className="text-on-surface">${getTotal().toFixed(2)}</span>
+                <span className="text-on-surface">{formatARS(getTotal())}</span>
               </div>
               <div className="flex justify-between font-body-md text-body-md text-on-surface-variant">
                 <span>Envío</span>
@@ -126,7 +127,7 @@ export function CheckoutPage() {
               </div>
               <div className="flex justify-between font-headline-md text-headline-md text-on-surface pt-md border-t border-outline-variant/20">
                 <span>Total</span>
-                <span className="text-primary">${getTotal().toFixed(2)}</span>
+                <span className="text-primary">{formatARS(getTotal())}</span>
               </div>
             </div>
 

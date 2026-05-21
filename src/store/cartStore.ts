@@ -6,11 +6,12 @@ export interface CartItem {
   nombre: string;
   precio: number;
   cantidad: number;
+  imagen_url?: string | null;
 }
 
 interface CartStore {
   items: CartItem[];
-  addItem: (producto: { id: number; nombre: string; precio: number }) => void;
+  addItem: (producto: { id: number; nombre: string; precio: number; imagen_url?: string | null }) => void;
   removeItem: (producto_id: number) => void;
   updateCantidad: (producto_id: number, cantidad: number) => void;
   clearCart: () => void;
@@ -43,6 +44,7 @@ export const useCartStore = create<CartStore>()(
                 nombre: producto.nombre,
                 precio: producto.precio,
                 cantidad: 1,
+                imagen_url: producto.imagen_url,
               },
             ],
           });

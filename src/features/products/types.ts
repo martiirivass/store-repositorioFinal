@@ -3,6 +3,7 @@ export interface CategoriaRead {
   nombre: string;
   descripcion: string | null;
   parent_id: number | null;
+  imagen_url: string | null;
 }
 
 export interface ProductoRead {
@@ -10,6 +11,7 @@ export interface ProductoRead {
   nombre: string;
   descripcion: string | null;
   precio: number;
+  imagen_url: string | null;
   stock_cantidad: number;
   disponible: boolean;
 }

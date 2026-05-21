@@ -1,21 +1,38 @@
+import { useEffect } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "../../../store/authStore";
 import { useCartStore } from "../../../store/cartStore";
 
 export function StoreLayout() {
-  const { isLogged, user, logout } = useAuthStore();
+  const { isLogged, isLoading, user, logout, checkAuth } = useAuthStore();
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.cantidad, 0));
   const navigate = useNavigate();
+
+  // Verificar sesión al montar la app
+  useEffect(() => {
+    checkAuth();
+  }, [checkAuth]);
 
   const handleLogout = async () => {
     await logout();
     navigate("/");
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-background">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-lg" />
+          <p className="text-on-surface-variant font-body-md">Cargando...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen flex flex-col">
       <header className="sticky top-0 z-50 bg-surface/80 backdrop-blur-md border-b border-outline-variant/30 glass-effect">
-        <div className="flex justify-between items-center h-20 px-gutter max-w-[1280px] mx-auto w-full">
+        <div className="flex justify-between items-center h-20 px-gutter max-w-[1400px] mx-auto w-full">
           <div className="flex items-center gap-12">
             <Link to="/" className="font-display-lg text-display-lg font-bold tracking-tighter text-primary">
               GASTRO
@@ -56,7 +73,7 @@ export function StoreLayout() {
         <Outlet />
       </main>
       <footer className="bg-surface-container-lowest border-t border-outline-variant/20">
-        <div className="flex flex-col md:flex-row justify-between items-center py-xl px-gutter max-w-[1280px] mx-auto">
+        <div className="flex flex-col md:flex-row justify-between items-center py-xl px-gutter max-w-[1400px] mx-auto">
           <span className="font-headline-md text-headline-md text-primary mb-md md:mb-0">GASTRO LUXURY</span>
           <div className="flex gap-xl text-on-surface-variant font-label-sm text-label-sm">
             <Link to="/" className="hover:text-primary transition-colors">Inicio</Link>

@@ -1,18 +1,27 @@
 import { useState } from "react";
+import { useSearchParams } from "react-router-dom";
 import { useProductos } from "../hooks/useProducts";
 import { useCartStore } from "../../../store/cartStore";
 import { getProductImage, HERO_IMAGE } from "../../../shared/images";
+import { formatARS } from "../../../shared/currency";
 
 export function CatalogPage() {
+  const [searchParams] = useSearchParams();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const limit = 12;
-  const { data, isLoading } = useProductos({ limit, offset: page * limit, q: search || undefined });
+  const categoria = searchParams.get("categoria") || undefined;
+  const { data, isLoading } = useProductos({
+    limit,
+    offset: page * limit,
+    q: search || undefined,
+    categoria_id: categoria ? Number(categoria) : undefined,
+  });
   const addItem = useCartStore((s) => s.addItem);
   const totalPages = data ? Math.ceil(data.total / limit) : 0;
 
   return (
-    <div className="max-w-[1280px] mx-auto px-margin-desktop py-xl">
+    <div className="max-w-[1400px] mx-auto px-margin-desktop py-xl">
       <section className="relative h-[280px] rounded-lg overflow-hidden mb-2xl border border-outline-variant">
         <img src={HERO_IMAGE} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent flex flex-col justify-center px-2xl">
@@ -43,9 +52,9 @@ export function CatalogPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
             {data?.data.map((p, idx) => (
               <div key={p.id} className="group bg-surface-container-low rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col">
-                <div className="relative aspect-square overflow-hidden">
+                <div className="relative aspect-square overflow-hidden bg-surface-container-high">
                   <img
-                    src={getProductImage(p.id, idx)}
+                    src={p.imagen_url || getProductImage(p.id, idx)}
                     alt={p.nombre}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
@@ -53,7 +62,7 @@ export function CatalogPage() {
                 <div className="p-lg flex flex-col flex-1">
                   <div className="flex justify-between items-start mb-xs gap-sm">
                     <h3 className="font-title-lg text-title-lg text-on-surface group-hover:text-primary transition-colors line-clamp-1">{p.nombre}</h3>
-                    <span className="text-primary font-bold font-title-lg shrink-0">${p.precio.toFixed(2)}</span>
+                    <span className="text-primary font-bold font-title-lg shrink-0">{formatARS(p.precio)}</span>
                   </div>
                   <p className="text-body-md text-on-surface-variant mb-xl line-clamp-2 flex-1">{p.descripcion || "Sin descripción"}</p>
                   <div className="flex flex-wrap gap-1 mb-3">

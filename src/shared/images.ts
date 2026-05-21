@@ -38,6 +38,42 @@ export function getProductImage(_productId: number, index: number): string {
   return PRODUCT_IMAGES_POOL[index % PRODUCT_IMAGES_POOL.length];
 }
 
-export function getCategoryImage(nombre: string): string | undefined {
-  return CATEGORY_IMAGES[nombre];
+// Colores pastel/gastronómicos para el avatar por inicial
+const CATEGORY_AVATAR_COLORS: [string, string][] = [
+  ["#2a4c69", "#94ccff"], // azul
+  ["#4a6930", "#a8e06a"], // verde
+  ["#6b3a5e", "#e8a0d0"], // violeta
+  ["#69482a", "#e0a86a"], // naranja
+  ["#2a5c4e", "#6ae0b0"], // teal
+  ["#5c2a42", "#e06a8a"], // rosa
+  ["#3a4a6b", "#8ab0e0"], // acero
+  ["#5a4a2a", "#d0c06a"], // mostaza
+];
+
+function getCategoryAvatarColor(name: string): [string, string] {
+  const hash = name.split("").reduce((sum, c) => sum + c.charCodeAt(0), 0);
+  return CATEGORY_AVATAR_COLORS[hash % CATEGORY_AVATAR_COLORS.length];
+}
+
+export function getCategoryImage(nombre: string, useAvatar = false): string | undefined {
+  // Si tiene imagen específica, usarla
+  if (CATEGORY_IMAGES[nombre]) return CATEGORY_IMAGES[nombre];
+
+  // Si no, generar avatar SVG con la inicial sobre degradado
+  if (!useAvatar) return undefined;
+
+  const letter = nombre.charAt(0).toUpperCase();
+  const [c1, c2] = getCategoryAvatarColor(nombre);
+
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+    <defs>
+      <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" stop-color="${c1}"/>
+        <stop offset="100%" stop-color="${c2}"/>
+      </linearGradient>
+    </defs>
+    <rect width="200" height="200" fill="url(#g)" rx="100"/>
+    <text x="100" y="130" font-family="Inter, sans-serif" font-size="80" font-weight="700" fill="white" text-anchor="middle" opacity="0.9">${letter}</text>
+  </svg>`;
+  return `data:image/svg+xml,${encodeURIComponent(svg)}`;
 }
