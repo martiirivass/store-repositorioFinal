@@ -33,7 +33,7 @@ export function MyOrdersPage() {
       ) : (
         <div className="space-y-lg">
           {data.data.map((pedido) => {
-            const codigoActual = pedido.estado_actual?.codigo || "PENDIENTE";
+            const codigoActual = pedido.estado_codigo || "PENDIENTE";
             const estadoInfo = ESTADOS[codigoActual] || ESTADOS.PENDIENTE;
             const idxActual = ESTADOS_ORDER.indexOf(codigoActual);
             const cancelable = ["PENDIENTE", "CONFIRMADO"].includes(codigoActual);
@@ -45,7 +45,7 @@ export function MyOrdersPage() {
                     <div className="space-y-1">
                       <h2 className="font-title-lg text-title-lg text-primary font-bold">#ORD-{String(pedido.id).padStart(4, "0")}</h2>
                       <p className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-wider">
-                        {new Date(pedido.fecha).toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" })}
+                        {new Date(pedido.created_at).toLocaleDateString("es-AR", { day: "numeric", month: "long", year: "numeric" })}
                       </p>
                     </div>
                     <div className="flex items-center gap-xl">
@@ -89,8 +89,8 @@ export function MyOrdersPage() {
                           <img src={getProductImage(det.producto_id, det.producto_id)} alt={det.nombre_producto} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-grow">
-                          <p className="font-label-lg text-label-lg text-on-surface">{det.nombre_producto}</p>
-                          <p className="font-body-md text-body-md text-on-surface-variant">{det.cantidad}x ${det.precio_unitario.toFixed(2)}</p>
+                          <p className="font-label-lg text-label-lg text-on-surface">{det.nombre_snapshot}</p>
+                          <p className="font-body-md text-body-md text-on-surface-variant">{det.cantidad}x ${det.precio_snapshot.toFixed(2)}</p>
                         </div>
                       </div>
                     ))}

@@ -23,12 +23,12 @@ export const pedidoService = {
   },
 
   getDirecciones: async () => {
-    const { data } = await api.get("/direcciones");
+    const { data } = await api.get("/direcciones-entrega");
     return data as DireccionRead[];
   },
 
   createDireccion: async (dir: DireccionCreate) => {
-    const { data } = await api.post("/direcciones", dir);
+    const { data } = await api.post("/direcciones-entrega", dir);
     return data as DireccionRead;
   },
 };

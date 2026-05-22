@@ -13,7 +13,7 @@ export function CheckoutPage() {
   const { data: direcciones } = useDirecciones();
   const navigate = useNavigate();
   const [selectedDir, setSelectedDir] = useState<number | null>(null);
-  const [formaPago, setFormaPago] = useState(1);
+  const [formaPago, setFormaPago] = useState("EFECTIVO");
   const [error, setError] = useState("");
 
   useEffect(() => {
@@ -22,7 +22,7 @@ export function CheckoutPage() {
 
   useEffect(() => {
     if (direcciones && direcciones.length > 0 && !selectedDir) {
-      const principal = direcciones.find((d) => d.principal);
+      const principal = direcciones.find((d) => d.es_principal);
       setSelectedDir(principal?.id || direcciones[0].id);
     }
   }, [direcciones]);
@@ -36,8 +36,8 @@ export function CheckoutPage() {
     try {
       setError("");
       await crearPedido({
-        forma_pago_id: formaPago,
-        direccion_entrega_id: selectedDir,
+        forma_pago_codigo: formaPago,
+        direccion_id: selectedDir,
         items: items.map((i) => ({ producto_id: i.producto_id, cantidad: i.cantidad })),
       });
       clearCart();
@@ -87,8 +87,8 @@ export function CheckoutPage() {
                   <button key={d.id} onClick={() => setSelectedDir(d.id)}
                     className={`w-full text-left p-md rounded-lg border transition-all ${selectedDir === d.id ? "border-primary bg-primary/5" : "border-outline-variant/30 bg-surface-container-low"}`}
                   >
-                    <p className="font-label-lg text-label-lg text-on-surface">{d.alias}</p>
-                    <p className="font-body-md text-body-md text-on-surface-variant">{d.direccion}, {d.ciudad}</p>
+                    <p className="font-label-lg text-label-lg text-on-surface">{d.alias || d.linea1}</p>
+                    <p className="font-body-md text-body-md text-on-surface-variant">{d.linea1}, {d.ciudad}</p>
                   </button>
                 ))}
               </div>
@@ -98,13 +98,13 @@ export function CheckoutPage() {
               <label className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Método de Pago</label>
               <div className="grid grid-cols-3 gap-sm">
                 {[
-                  { id: 1, label: "Tarjeta", icon: "credit_card" },
-                  { id: 2, label: "Efectivo", icon: "payments" },
-                  { id: 3, label: "Transferencia", icon: "account_balance" },
+                  { codigo: "TARJETA", label: "Tarjeta", icon: "credit_card" },
+                  { codigo: "EFECTIVO", label: "Efectivo", icon: "payments" },
+                  { codigo: "TRANSFERENCIA", label: "Transferencia", icon: "account_balance" },
                 ].map((mp) => (
-                  <button key={mp.id} onClick={() => setFormaPago(mp.id)}
+                  <button key={mp.codigo} onClick={() => setFormaPago(mp.codigo)}
                     className={`flex flex-col items-center gap-xs p-md rounded transition-all ${
-                      formaPago === mp.id
+                      formaPago === mp.codigo
                         ? "bg-surface-container-low border-2 border-primary text-primary"
                         : "bg-surface-container-low border border-outline-variant/30 text-on-surface-variant hover:border-outline"
                     }`}
