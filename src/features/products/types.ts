@@ -85,6 +85,7 @@ export interface PedidoCreate {
   forma_pago_codigo: string;
   direccion_id?: number | null;
   items: { producto_id: number; cantidad: number }[];
+  referencia_pago?: string | null;
 }
 
 export interface DireccionCreate {
