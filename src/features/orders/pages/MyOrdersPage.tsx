@@ -1,5 +1,5 @@
 import { useMisPedidos, useCancelarPedido } from "../hooks/usePedidos";
-import { getProductImage } from "../../../shared/images";
+import { getProductImage } from "@/shared/images";
 
 const ESTADOS: Record<string, { label: string; color: string }> = {
   PENDIENTE: { label: "Pendiente", color: "bg-orange-900/30 text-primary border-primary/20" },
@@ -84,9 +84,9 @@ export function MyOrdersPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
                     {pedido.detalles?.slice(0, 2).map((det) => (
-                      <div key={det.id} className="flex items-center gap-md bg-surface-container/50 p-md rounded-lg border border-outline-variant">
+                      <div key={`${det.pedido_id}-${det.producto_id}`} className="flex items-center gap-md bg-surface-container/50 p-md rounded-lg border border-outline-variant">
                         <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
-                          <img src={getProductImage(det.producto_id, det.producto_id)} alt={det.nombre_producto} className="w-full h-full object-cover" />
+                          <img src={getProductImage(det.producto_id, det.producto_id)} alt={det.nombre_snapshot} className="w-full h-full object-cover" />
                         </div>
                         <div className="flex-grow">
                           <p className="font-label-lg text-label-lg text-on-surface">{det.nombre_snapshot}</p>

@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { useAuthStore } from "../../../store/authStore";
-import { useCartStore } from "../../../store/cartStore";
+import { useAuthStore } from "@/features/auth/store";
+import { useCartStore } from "@/features/cart/store";
 
 export function StoreLayout() {
   const { isLogged, isLoading, user, logout, checkAuth } = useAuthStore();

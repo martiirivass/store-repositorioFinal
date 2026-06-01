@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { useProductos, useCategorias } from "../hooks/useProducts";
-import { useCartStore } from "../../../store/cartStore";
-import { HERO_IMAGE, PREMIUM_IMAGE, getProductImage, getCategoryImage } from "../../../shared/images";
-import { formatARS } from "../../../shared/currency";
+import { useCartStore } from "@/features/cart/store";
+import { HERO_IMAGE, PREMIUM_IMAGE, getProductImage, getCategoryImage } from "@/shared/images";
+import { formatARS } from "@/shared/currency";
 import type { CategoriaRead } from "../types";
 
 const FALLBACK_CATEGORIES = ["Pizzas", "Hamburguesas", "Bebidas", "Postres", "Entrantes"];

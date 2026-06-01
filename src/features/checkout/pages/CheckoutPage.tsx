@@ -1,10 +1,10 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useCartStore } from "../../../store/cartStore";
-import { useCrearPedido, useDirecciones } from "../hooks/usePedidos";
-import { useAuthStore } from "../../../store/authStore";
-import { getProductImage } from "../../../shared/images";
-import { formatARS } from "../../../shared/currency";
+import { useCartStore } from "@/features/cart/store";
+import { useCrearPedido, useDirecciones } from "@/features/orders/hooks/usePedidos";
+import { useAuthStore } from "@/features/auth/store";
+import { getProductImage } from "@/shared/images";
+import { formatARS } from "@/shared/currency";
 
 // ─── Helper: máscara para número de tarjeta ───────────────────────────────
 function maskCardNumber(value: string) {

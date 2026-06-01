@@ -1,4 +1,4 @@
-import { api } from "../../../shared/api";
+import { api } from "@/shared/api";
 import type { PedidoReadWithDetalles, PedidoCreate, DireccionRead, DireccionCreate } from "../types";
 
 export const pedidoService = {

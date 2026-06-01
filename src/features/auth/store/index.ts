@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { api } from "../shared/api";
+import { api } from "@/shared/api";
 
 interface User {
   id: number;

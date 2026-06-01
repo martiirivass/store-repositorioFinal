@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
-import { useCartStore } from "../../../store/cartStore";
-import { getProductImage } from "../../../shared/images";
-import { formatARS } from "../../../shared/currency";
+import { useCartStore } from "@/features/cart/store";
+import { getProductImage } from "@/shared/images";
+import { formatARS } from "@/shared/currency";
 
 export function CartPage() {
   const { items, updateCantidad, removeItem, getTotal } = useCartStore();

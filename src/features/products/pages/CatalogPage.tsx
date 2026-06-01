@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { useProductos } from "../hooks/useProducts";
-import { useCartStore } from "../../../store/cartStore";
-import { getProductImage, HERO_IMAGE } from "../../../shared/images";
-import { formatARS } from "../../../shared/currency";
+import { useCartStore } from "@/features/cart/store";
+import { getProductImage, HERO_IMAGE } from "@/shared/images";
+import { formatARS } from "@/shared/currency";
 
 export function CatalogPage() {
   const [searchParams] = useSearchParams();
