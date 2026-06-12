@@ -5,12 +5,11 @@ const ESTADOS: Record<string, { label: string; color: string }> = {
   PENDIENTE: { label: "Pendiente", color: "bg-orange-900/30 text-primary border-primary/20" },
   CONFIRMADO: { label: "Confirmado", color: "bg-blue-900/30 text-blue-400 border-blue-400/20" },
   EN_PREP: { label: "En Preparación", color: "bg-yellow-900/30 text-yellow-400 border-yellow-400/20" },
-  EN_CAMINO: { label: "En Camino", color: "bg-purple-900/30 text-purple-400 border-purple-400/20" },
   ENTREGADO: { label: "Entregado", color: "bg-green-900/30 text-green-400 border-green-400/20" },
   CANCELADO: { label: "Cancelado", color: "bg-red-900/30 text-red-400 border-red-400/20" },
 };
 
-const ESTADOS_ORDER = ["PENDIENTE", "CONFIRMADO", "EN_PREP", "EN_CAMINO", "ENTREGADO"];
+const ESTADOS_ORDER = ["PENDIENTE", "CONFIRMADO", "EN_PREP", "ENTREGADO"];
 
 export function MyOrdersPage() {
   const { data, isLoading } = useMisPedidos();

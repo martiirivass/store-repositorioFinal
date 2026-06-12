@@ -1,5 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
-import { StoreLayout } from "@/features/products/components/StoreLayout";
+import { StoreLayout } from "@/layouts/StoreLayout";
 import { HomePage } from "@/features/products/pages/HomePage";
 import { CatalogPage } from "@/features/products/pages/CatalogPage";
 import { CartPage } from "@/features/cart/pages/CartPage";
