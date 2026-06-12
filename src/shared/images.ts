@@ -1,4 +1,4 @@
-// Imágenes de Stitch (Google AIDA - AI-generated food photography)
+// Imágenes placeholder de Google AIDA (food photography)
 // Usadas como placeholder visual mientras el backend no tenga campo imagen
 
 export const HERO_IMAGE =
