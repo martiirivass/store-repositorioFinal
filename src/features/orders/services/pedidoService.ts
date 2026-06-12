@@ -3,12 +3,12 @@ import type { PedidoReadWithDetalles, PedidoCreate, DireccionRead, DireccionCrea
 
 export const pedidoService = {
   create: async (data: PedidoCreate) => {
-    const res = await api.post("/pedidos", data);
+    const res = await api.post("/pedidos/", data);
     return res.data as PedidoReadWithDetalles;
   },
 
   listMine: async (params?: { limit?: number; offset?: number }) => {
-    const { data } = await api.get("/pedidos", { params });
+    const { data } = await api.get("/pedidos/", { params });
     return data as { data: PedidoReadWithDetalles[]; total: number };
   },
 
@@ -23,12 +23,12 @@ export const pedidoService = {
   },
 
   getDirecciones: async () => {
-    const { data } = await api.get("/direcciones-entrega");
+    const { data } = await api.get("/direcciones-entrega/");
     return data as DireccionRead[];
   },
 
   createDireccion: async (dir: DireccionCreate) => {
-    const { data } = await api.post("/direcciones-entrega", dir);
+    const { data } = await api.post("/direcciones-entrega/", dir);
     return data as DireccionRead;
   },
 };

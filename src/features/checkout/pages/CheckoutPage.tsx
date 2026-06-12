@@ -44,6 +44,8 @@ export function CheckoutPage() {
   const [bankName, setBankName] = useState("");
   const [accountHolder, setAccountHolder] = useState("");
 
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   // ─── Estado de éxito ──────────────────────────────────────────────────
   const [showSuccess, setShowSuccess] = useState(false);
   const [successData, setSuccessData] = useState<{
@@ -66,8 +68,13 @@ export function CheckoutPage() {
   }, [direcciones]);
 
   // ─── Si el carrito está vacío, redirigir ──────────────────────────────
-  if (items.length === 0 && !showSuccess) {
-    navigate("/carrito");
+  useEffect(() => {
+    if (items.length === 0 && !showSuccess && !isSubmitting) {
+      navigate("/carrito");
+    }
+  }, [items.length, showSuccess, isSubmitting]);
+
+  if (items.length === 0 && !showSuccess && !isSubmitting) {
     return null;
   }
 
@@ -85,6 +92,7 @@ export function CheckoutPage() {
 
   // ─── Validar campos según forma de pago ───────────────────────────────
   const validarPago = (): string | null => {
+    if (formaPago === "MERCADOPAGO") return null;
     if (formaPago === "TARJETA") {
       const digits = cardNumber.replace(/\D/g, "");
       if (digits.length < 13) return "El número de tarjeta debe tener al menos 13 dígitos";
@@ -105,10 +113,12 @@ export function CheckoutPage() {
   const handleSubmit = async () => {
     try {
       setError("");
+      setIsSubmitting(true);
 
       const errorPago = validarPago();
       if (errorPago) {
         setError(errorPago);
+        setIsSubmitting(false);
         return;
       }
 
@@ -121,7 +131,13 @@ export function CheckoutPage() {
         referencia_pago: referencia,
       });
 
+      if (formaPago === "MERCADOPAGO") {
+        navigate(`/pagar/${pedido.id}`);
+        return;
+      }
+
       clearCart();
+
       setSuccessData({
         pedidoId: pedido.id,
         total: pedido.total,
@@ -131,6 +147,7 @@ export function CheckoutPage() {
     } catch (err: any) {
       setError(err?.response?.data?.detail || "Error al crear el pedido");
     }
+    setIsSubmitting(false);
   };
 
   // ─── Render: PANTALLA DE ÉXITO ────────────────────────────────────────
@@ -139,6 +156,7 @@ export function CheckoutPage() {
       TARJETA: "Tarjeta de crédito/débito",
       EFECTIVO: "Efectivo",
       TRANSFERENCIA: "Transferencia bancaria",
+      MERCADOPAGO: "Mercado Pago",
     };
 
     return (
@@ -225,7 +243,7 @@ export function CheckoutPage() {
           </div>
 
           {/* ─── Datos de pago según método ──────────────────────────── */}
-          {formaPago !== "EFECTIVO" && (
+          {formaPago !== "EFECTIVO" && formaPago !== "MERCADOPAGO" && (
             <div className="bg-surface-container-high rounded-lg p-xl border border-outline-variant/30 space-y-lg">
               <h2 className="font-headline-md text-headline-md text-on-surface">
                 {formaPago === "TARJETA" ? "Datos de la Tarjeta" : "Datos de la Transferencia"}
@@ -343,6 +361,19 @@ export function CheckoutPage() {
               </div>
             </div>
           )}
+
+          {/* Info para Mercado Pago */}
+          {formaPago === "MERCADOPAGO" && (
+            <div className="bg-surface-container-high rounded-lg p-xl border border-dashed border-outline-variant/50">
+              <div className="flex items-center gap-md">
+                <span className="material-symbols-outlined text-[32px] text-secondary">info</span>
+                <p className="font-body-md text-body-md text-on-surface-variant">
+                  Vas a pagar con Mercado Pago. Al confirmar el pedido serás redirigido al sitio seguro de
+                  Mercado Pago para completar el pago.
+                </p>
+              </div>
+            </div>
+          )}
         </div>
 
         {/* Columna derecha: resumen + direcciones */}
@@ -366,11 +397,12 @@ export function CheckoutPage() {
 
             <div className="space-y-md mb-lg">
               <label className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Método de Pago</label>
-              <div className="grid grid-cols-3 gap-sm">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-sm">
                 {[
                   { codigo: "TARJETA", label: "Tarjeta", icon: "credit_card" },
                   { codigo: "EFECTIVO", label: "Efectivo", icon: "payments" },
                   { codigo: "TRANSFERENCIA", label: "Transferencia", icon: "account_balance" },
+                  { codigo: "MERCADOPAGO", label: "Mercado Pago", icon: "account_balance" },
                 ].map((mp) => (
                   <button key={mp.codigo} onClick={() => setFormaPago(mp.codigo)}
                     className={`flex flex-col items-center gap-xs p-md rounded transition-all ${

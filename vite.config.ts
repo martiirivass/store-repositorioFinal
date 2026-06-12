@@ -14,9 +14,12 @@ export default defineConfig({
     port: 5174,
     proxy: {
       "/api": {
-        target: "http://localhost:8000",
+        target: "http://localhost:8001",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api(\/v1)?/, ""),
+      },
+      "^/(pedidos|auth|productos|categorias|ingredientes|direcciones-entrega|admin|unidades-medida|formas-pago|estados-pedido|pagos|uploads)/": {
+        target: "http://localhost:8001",
+        changeOrigin: true,
       },
     },
   },
