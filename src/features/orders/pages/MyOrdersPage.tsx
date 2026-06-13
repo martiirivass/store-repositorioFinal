@@ -1,5 +1,7 @@
 import { useMisPedidos, useCancelarPedido } from "../hooks/usePedidos";
 import { getProductImage } from "@/shared/images";
+import { useAuthStore } from "@/features/auth/store";
+import { useOrderStatusWS } from "@/hooks/useOrderStatusWS";
 
 const ESTADOS: Record<string, { label: string; color: string }> = {
   PENDIENTE: { label: "Pendiente", color: "bg-orange-900/30 text-primary border-primary/20" },
@@ -11,9 +13,22 @@ const ESTADOS: Record<string, { label: string; color: string }> = {
 
 const ESTADOS_ORDER = ["PENDIENTE", "CONFIRMADO", "EN_PREP", "ENTREGADO"];
 
+const TERMINAL_STATES = ["ENTREGADO", "CANCELADO"];
+
 export function MyOrdersPage() {
   const { data, isLoading } = useMisPedidos();
   const { mutate: cancelar } = useCancelarPedido();
+  const { isLogged } = useAuthStore();
+
+  // Connect to the latest active order for real-time updates
+  const latestActiveOrderId = data?.data
+    .filter((p) => !TERMINAL_STATES.includes(p.estado_codigo))
+    .sort(
+      (a, b) =>
+        new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
+    )[0]?.id;
+  // Only connect WS while user is authenticated
+  useOrderStatusWS(isLogged ? latestActiveOrderId : null);
 
   return (
     <div className="max-w-[1280px] mx-auto px-gutter py-xl">

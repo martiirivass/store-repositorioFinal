@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
+import { ConnectionBadge } from "@/components/ConnectionBadge";
 
 export function StoreLayout() {
   const { isLogged, isLoading, user, logout, checkAuth } = useAuthStore();
@@ -54,6 +55,9 @@ export function StoreLayout() {
                 </span>
               )}
             </Link>
+            <div className="hidden sm:flex mr-2">
+              <ConnectionBadge />
+            </div>
             {isLogged ? (
               <div className="flex items-center gap-4">
                 <span className="hidden sm:inline font-label-sm text-label-sm text-on-surface-variant">{user?.nombre}</span>
