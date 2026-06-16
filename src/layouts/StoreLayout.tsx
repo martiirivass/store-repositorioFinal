@@ -5,7 +5,11 @@ import { useCartStore } from "@/features/cart/store";
 import { ConnectionBadge } from "@/components/ConnectionBadge";
 
 export function StoreLayout() {
-  const { isLogged, isLoading, user, logout, checkAuth } = useAuthStore();
+  const isLogged = useAuthStore((s) => s.isLogged);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const user = useAuthStore((s) => s.user);
+  const logout = useAuthStore((s) => s.logout);
+  const checkAuth = useAuthStore((s) => s.checkAuth);
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.cantidad, 0));
   const navigate = useNavigate();
 
@@ -84,7 +88,7 @@ export function StoreLayout() {
             <Link to="/catalogo" className="hover:text-primary transition-colors">Catálogo</Link>
             <span className="hover:text-primary transition-colors cursor-pointer">Contacto</span>
           </div>
-          <p className="font-body-md text-body-md text-on-surface-variant mt-md md:mt-0">© 2024 GastroStore. Functional Luxury.</p>
+          <p className="font-body-md text-body-md text-on-surface-variant mt-md md:mt-0">© 2026 GastroStore. Functional Luxury.</p>
         </div>
       </footer>
     </div>

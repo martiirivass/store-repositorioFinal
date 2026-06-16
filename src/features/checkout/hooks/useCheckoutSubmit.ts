@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useCartStore } from "@/features/cart/store";
 import { checkoutService } from "@/features/checkout/services/checkoutService";
 import type { CartItem } from "@/features/cart/store";
@@ -9,6 +10,7 @@ export interface SubmitParams {
   selectedDir: number | null;
   items: CartItem[];
   referencia: string | null;
+  codigoDescuento?: string | null;
 }
 
 export interface SuccessData {
@@ -18,20 +20,15 @@ export interface SuccessData {
 }
 
 export function useCheckoutSubmit() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSuccess, setShowSuccess] = useState(false);
   const [successData, setSuccessData] = useState<SuccessData | null>(null);
   const clearCart = useCartStore((s) => s.clearCart);
   const navigate = useNavigate();
+  const qc = useQueryClient();
 
-  const handleSubmit = async (
-    params: SubmitParams,
-    onError: (msg: string) => void
-  ) => {
-    try {
-      setIsSubmitting(true);
-
-      const pedido = await checkoutService.crearPedido({
+  const { mutateAsync, isPending } = useMutation({
+    mutationFn: (params: SubmitParams) =>
+      checkoutService.crearPedido({
         forma_pago_codigo: params.formaPago,
         direccion_id: params.selectedDir,
         items: params.items.map((i) => ({
@@ -39,7 +36,19 @@ export function useCheckoutSubmit() {
           cantidad: i.cantidad,
         })),
         referencia_pago: params.referencia,
-      });
+        codigo_descuento: params.codigoDescuento || null,
+      }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["pedidos"] });
+    },
+  });
+
+  const handleSubmit = async (
+    params: SubmitParams,
+    onError: (msg: string) => void
+  ) => {
+    try {
+      const pedido = await mutateAsync(params);
 
       if (params.formaPago === "MERCADOPAGO") {
         navigate(`/pagar/${pedido.id}`);
@@ -47,7 +56,6 @@ export function useCheckoutSubmit() {
       }
 
       clearCart();
-
       setSuccessData({
         pedidoId: pedido.id,
         total: pedido.total,
@@ -56,13 +64,11 @@ export function useCheckoutSubmit() {
       setShowSuccess(true);
     } catch (err: any) {
       onError(err?.response?.data?.detail || "Error al crear el pedido");
-    } finally {
-      setIsSubmitting(false);
     }
   };
 
   return {
-    isSubmitting,
+    isSubmitting: isPending,
     showSuccess,
     successData,
     setShowSuccess,

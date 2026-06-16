@@ -17,7 +17,7 @@ export const pedidoService = {
     return data as PedidoReadWithDetalles;
   },
 
-  cancel: async (id: number, motivo: string) => {
+  cancel: async (id: number, motivo?: string) => {
     const { data } = await api.patch(`/pedidos/${id}/cancelar`, { motivo });
     return data;
   },

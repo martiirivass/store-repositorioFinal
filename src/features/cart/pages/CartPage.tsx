@@ -4,7 +4,10 @@ import { getProductImage, getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 
 export function CartPage() {
-  const { items, updateCantidad, removeItem, getTotal } = useCartStore();
+  const items = useCartStore((s) => s.items);
+  const updateCantidad = useCartStore((s) => s.updateCantidad);
+  const removeItem = useCartStore((s) => s.removeItem);
+  const getTotal = useCartStore((s) => s.getTotal);
 
   if (items.length === 0) {
     return (
