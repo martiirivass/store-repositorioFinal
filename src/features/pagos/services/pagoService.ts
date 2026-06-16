@@ -19,12 +19,12 @@ export interface PagoStatusResponse {
 
 export const pagoService = {
   crearPreferencia: async (data: CrearPreferenciaRequest) => {
-    const res = await api.post("/api/v1/pagos/crear-preferencia", data);
+    const res = await api.post("/pagos/crear-preferencia", data);
     return res.data as CrearPreferenciaResponse;
   },
 
   getPagoStatus: async (pedidoId: number) => {
-    const res = await api.get(`/api/v1/pagos/${pedidoId}`);
+    const res = await api.get(`/pagos/${pedidoId}`);
     return res.data as PagoStatusResponse;
   },
 };
