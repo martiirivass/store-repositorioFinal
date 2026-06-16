@@ -11,7 +11,7 @@ export interface CartItem {
 
 interface CartStore {
   items: CartItem[];
-  addItem: (producto: { id: number; nombre: string; precio: number; imagen_url?: string | null }) => void;
+  addItem: (producto: { id: number; nombre: string; precio: number; imagen_url?: string | null; cantidad?: number }) => void;
   removeItem: (producto_id: number) => void;
   updateCantidad: (producto_id: number, cantidad: number) => void;
   clearCart: () => void;
@@ -26,12 +26,13 @@ export const useCartStore = create<CartStore>()(
 
       addItem: (producto) => {
         const items = get().items;
+        const qty = producto.cantidad || 1;
         const existing = items.find((i) => i.producto_id === producto.id);
         if (existing) {
           set({
             items: items.map((i) =>
               i.producto_id === producto.id
-                ? { ...i, cantidad: i.cantidad + 1 }
+                ? { ...i, cantidad: i.cantidad + qty }
                 : i
             ),
           });
@@ -43,7 +44,7 @@ export const useCartStore = create<CartStore>()(
                 producto_id: producto.id,
                 nombre: producto.nombre,
                 precio: producto.precio,
-                cantidad: 1,
+                cantidad: qty,
                 imagen_url: producto.imagen_url,
               },
             ],
@@ -73,6 +74,9 @@ export const useCartStore = create<CartStore>()(
 
       getCount: () => get().items.reduce((sum, i) => sum + i.cantidad, 0),
     }),
-    { name: "gastro-cart" }
+    {
+      name: "cart-store",
+      partialize: (state) => ({ items: state.items }),
+    }
   )
 );

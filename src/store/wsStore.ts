@@ -15,6 +15,7 @@ interface WSState {
   connected: boolean;
   reconnectAttempts: number;
   lastMessage: Record<string, unknown> | null;
+  attempted: boolean;
   connect: (url: string) => void;
   disconnect: () => void;
   send: (data: string) => void;
@@ -24,10 +25,12 @@ export const useWsStore = create<WSState>((set) => ({
   connected: false,
   reconnectAttempts: 0,
   lastMessage: null,
+  attempted: false,
 
   connect: (url: string) => {
     // Skip if already connected to the same URL
     if (ws && currentUrl === url && ws.readyState === WebSocket.OPEN) {
+      set({ attempted: true });
       return;
     }
 
@@ -49,7 +52,7 @@ export const useWsStore = create<WSState>((set) => ({
     currentUrl = url;
     reconnectCount = 0;
     intentionalClose = false;
-    set({ connected: false, reconnectAttempts: 0 });
+    set({ connected: false, reconnectAttempts: 0, attempted: true });
 
     const connectWs = () => {
       if (intentionalClose) return;

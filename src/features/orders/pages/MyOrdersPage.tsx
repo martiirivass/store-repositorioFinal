@@ -1,7 +1,10 @@
+import { useNavigate } from "react-router-dom";
 import { useMisPedidos, useCancelarPedido } from "../hooks/usePedidos";
 import { getProductImage } from "@/shared/images";
 import { useAuthStore } from "@/features/auth/store";
+import { useCartStore } from "@/features/cart/store";
 import { useOrderStatusWS } from "@/hooks/useOrderStatusWS";
+import { Skeleton } from "@/shared/components/Skeleton";
 
 const ESTADOS: Record<string, { label: string; color: string }> = {
   PENDIENTE: { label: "Pendiente", color: "bg-orange-900/30 text-primary border-primary/20" },
@@ -19,6 +22,9 @@ export function MyOrdersPage() {
   const { data, isLoading } = useMisPedidos();
   const { mutate: cancelar } = useCancelarPedido();
   const { isLogged } = useAuthStore();
+  const addItem = useCartStore((s) => s.addItem);
+  const clearCart = useCartStore((s) => s.clearCart);
+  const navigate = useNavigate();
 
   // Connect to the latest active order for real-time updates
   const latestActiveOrderId = data?.data
@@ -38,7 +44,27 @@ export function MyOrdersPage() {
       </header>
 
       {isLoading ? (
-        <div className="text-center py-xl text-on-surface-variant">Cargando...</div>
+        <div className="space-y-lg">
+          {[1, 2, 3].map((n) => (
+            <div key={n} className="bg-surface-container-high border border-outline-variant rounded-xl p-xl space-y-xl">
+              <div className="flex justify-between items-center">
+                <div className="space-y-md">
+                  <Skeleton className="h-6 w-32" />
+                  <Skeleton className="h-4 w-48" />
+                </div>
+                <Skeleton className="h-10 w-28" />
+              </div>
+              <div className="flex gap-md">
+                <Skeleton className="h-16 w-full max-w-[200px]" />
+                <Skeleton className="h-16 w-full max-w-[200px]" />
+              </div>
+              <div className="flex justify-end gap-md">
+                <Skeleton className="h-10 w-32" />
+                <Skeleton className="h-10 w-32" />
+              </div>
+            </div>
+          ))}
+        </div>
       ) : !data?.data.length ? (
         <div className="text-center py-xl">
           <span className="material-symbols-outlined text-[64px] text-on-surface-variant/30 mb-lg">receipt_long</span>
@@ -117,13 +143,25 @@ export function MyOrdersPage() {
 
                   <div className="flex flex-wrap justify-end gap-md pt-md border-t border-outline-variant">
                     {cancelable && (
-                      <button onClick={() => cancelar(pedido.id)}
+                      <button onClick={() => {
+                        cancelar({ id: pedido.id, motivo: "Cancelado por el usuario" });
+                      }}
                         className="px-xl py-md border border-error/50 text-error hover:bg-error/10 transition-colors font-label-lg text-label-lg rounded-lg active:scale-95"
                       >
                         Cancelar pedido
                       </button>
                     )}
-                    <button className="px-xl py-md bg-primary text-on-primary font-label-lg text-label-lg rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/10">
+                    <button onClick={() => {
+                        clearCart();
+                        pedido.detalles?.forEach((det) => addItem({
+                          id: det.producto_id,
+                          nombre: det.nombre_snapshot,
+                          precio: det.precio_snapshot,
+                          cantidad: det.cantidad,
+                        }));
+                        navigate("/carrito");
+                      }}
+                      className="px-xl py-md bg-primary text-on-primary font-label-lg text-label-lg rounded-lg font-bold hover:opacity-90 transition-all active:scale-95 shadow-lg shadow-primary/10">
                       Repetir pedido
                     </button>
                   </div>

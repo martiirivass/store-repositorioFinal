@@ -1,12 +1,13 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { Link, useSearchParams } from "react-router-dom";
-import { useProductos } from "../hooks/useProducts";
+import { useProductos, useCategorias } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
 import { getProductImage, HERO_IMAGE } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
+import { PageSkeleton } from "@/shared/components/Skeleton";
 
 export function CatalogPage() {
-  const [searchParams] = useSearchParams();
+  const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(0);
   const [search, setSearch] = useState("");
   const limit = 12;
@@ -17,8 +18,22 @@ export function CatalogPage() {
     q: search || undefined,
     categoria_id: categoria ? Number(categoria) : undefined,
   });
+  const { data: categoriasData } = useCategorias();
+  const categorias = (categoriasData as { id: number; nombre: string; imagen_url?: string | null }[] | undefined) || [];
+  const inputRef = useRef<HTMLInputElement>(null);
   const addItem = useCartStore((s) => s.addItem);
   const totalPages = data ? Math.ceil(data.total / limit) : 0;
+
+  const seleccionarCategoria = (id: number | null) => {
+    setPage(0);
+    const params = new URLSearchParams(searchParams);
+    if (id) {
+      params.set("categoria", String(id));
+    } else {
+      params.delete("categoria");
+    }
+    setSearchParams(params);
+  };
 
   return (
     <div className="max-w-[1400px] mx-auto px-margin-desktop py-xl">
@@ -33,24 +48,51 @@ export function CatalogPage() {
         </div>
       </section>
 
-      <div className="mb-xl">
-        <div className="relative w-full max-w-md">
-          <span className="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-on-surface-variant">search</span>
-          <input
-            value={search}
-            onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-            className="w-full bg-surface-container border border-outline-variant rounded-full pl-xl pr-md py-sm text-body-md focus:outline-none focus:border-primary transition-colors"
-            placeholder="Buscar sabor..."
-          />
-        </div>
+      <div className="mb-xl flex gap-sm">
+        <input type="text"
+          value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }}
+          className="flex-1 max-w-md bg-surface-container-low border border-outline-variant/40 rounded-lg px-lg py-md font-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+          placeholder="Ej: Pizzas" />
+        <button
+          onClick={() => inputRef.current?.focus()}
+          className="bg-primary text-on-primary px-lg py-md rounded-lg font-label-lg hover:brightness-110 transition-all active:scale-95"
+        >
+          <span className="material-symbols-outlined">search</span>
+        </button>
+      </div>
+
+      <div className="flex flex-wrap gap-sm mb-xl">
+        <button
+          onClick={() => seleccionarCategoria(null)}
+          className={`px-md py-sm rounded-full font-label-lg text-label-lg border transition-all ${
+            !categoria
+              ? "bg-primary text-on-primary border-primary"
+              : "bg-surface-container text-on-surface-variant border-outline-variant hover:border-primary hover:text-primary"
+          }`}
+        >
+          Todas
+        </button>
+        {categorias.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => seleccionarCategoria(cat.id)}
+            className={`px-md py-sm rounded-full font-label-lg text-label-lg border transition-all ${
+              Number(categoria) === cat.id
+                ? "bg-primary text-on-primary border-primary"
+                : "bg-surface-container text-on-surface-variant border-outline-variant hover:border-primary hover:text-primary"
+            }`}
+          >
+            {cat.nombre}
+          </button>
+        ))}
       </div>
 
       {isLoading ? (
-        <div className="text-center py-xl text-on-surface-variant">Cargando...</div>
+        <PageSkeleton count={8} />
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
-            {data?.data.map((p, idx) => (
+            {(data?.data ?? []).map((p, idx) => (
               <div key={p.id} className="group bg-surface-container-low rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col">
                 <Link to={`/producto/${p.id}`} className="relative aspect-square overflow-hidden bg-surface-container-high block">
                   <img

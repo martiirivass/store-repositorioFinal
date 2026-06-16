@@ -10,6 +10,10 @@ import { router } from './router'
 
 import './index.css'
 
+import { initMercadoPago } from '@mercadopago/sdk-react'
+
+initMercadoPago(import.meta.env.VITE_MP_PUBLIC_KEY || '')
+
 const queryClient = new QueryClient()
 
 ReactDOM.createRoot(document.getElementById('root')!).render(

@@ -17,11 +17,6 @@ export default defineConfig({
         target: "http://localhost:8000",
         changeOrigin: true,
       },
-      "^/(pedidos|auth|productos|categorias|ingredientes|direcciones|admin|unidades-medida|formas-pago|estados-pedido|pagos|uploads)/": {
-        target: "http://localhost:8000",
-        changeOrigin: true,
-        rewrite: (path) => `/api/v1${path}`,
-      },
     },
   },
 })

@@ -3,6 +3,7 @@ import { useProducto } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
 import { getProductImage } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
+import { ProductDetailSkeleton } from "@/shared/components/Skeleton";
 
 export function ProductDetailPage() {
   const { id } = useParams<{ id: string }>();
@@ -12,14 +13,7 @@ export function ProductDetailPage() {
   const addItem = useCartStore((s) => s.addItem);
 
   if (isLoading) {
-    return (
-      <div className="min-h-[60vh] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-lg" />
-          <p className="text-on-surface-variant font-body-md">Cargando producto...</p>
-        </div>
-      </div>
-    );
+    return <ProductDetailSkeleton />;
   }
 
   if (isError || !producto) {

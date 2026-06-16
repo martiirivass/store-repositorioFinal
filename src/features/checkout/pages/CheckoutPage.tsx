@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useCartStore } from "@/features/cart/store";
 import { useAuthStore } from "@/features/auth/store";
@@ -11,10 +11,27 @@ import { getProductImage } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 
 export function CheckoutPage() {
-  const { items, getTotal } = useCartStore();
+  const items = useCartStore((s) => s.items);
+  const getTotal = useCartStore((s) => s.getTotal);
   const { isLogged } = useAuthStore();
   const { data: direcciones } = useDirecciones();
   const navigate = useNavigate();
+
+  const [codigoDescuento, setCodigoDescuento] = useState("");
+  const [descuentoValido, setDescuentoValido] = useState(false);
+
+  const DESCUENTO_PORCENTAJE = 0.20;
+  const totalSinDescuento = getTotal();
+  const descuentoMonto = descuentoValido ? totalSinDescuento * DESCUENTO_PORCENTAJE : 0;
+  const totalConDescuento = totalSinDescuento - descuentoMonto;
+
+  const aplicarDescuento = () => {
+    if (codigoDescuento.trim().toUpperCase() === "PREMIUN20") {
+      setDescuentoValido(true);
+    } else {
+      setDescuentoValido(false);
+    }
+  };
 
   const form = useCheckoutForm();
   const { isSubmitting, showSuccess, successData, handleSubmit } = useCheckoutSubmit();
@@ -33,7 +50,7 @@ export function CheckoutPage() {
     const errorPago = form.validarPago();
     if (errorPago) { form.setError(errorPago); return; }
     const referencia = form.buildReferencia();
-    await handleSubmit({ formaPago: form.formaPago, selectedDir: form.selectedDir, items, referencia }, form.setError);
+    await handleSubmit({ formaPago: form.formaPago, selectedDir: form.selectedDir, items, referencia, codigoDescuento: descuentoValido ? "PREMIUN20" : null }, form.setError);
   };
 
   if (items.length === 0 && !showSuccess && !isSubmitting) return null;
@@ -112,18 +129,50 @@ export function CheckoutPage() {
               </div>
             </div>
 
+            <div className="space-y-md mb-lg">
+              <label className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">¿Tenés un código de descuento?</label>
+              <div className="flex gap-sm">
+                <input type="text" placeholder=""
+                  value={codigoDescuento} onChange={(e) => { setCodigoDescuento(e.target.value); setDescuentoValido(false); }}
+                  className="flex-grow bg-surface-container-low border border-outline-variant/40 rounded-lg px-lg py-md font-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all" />
+                <button onClick={aplicarDescuento}
+                  className="bg-primary text-on-primary px-lg py-md rounded-lg font-label-lg hover:brightness-110 transition-all active:scale-95 disabled:opacity-50"
+                  disabled={!codigoDescuento.trim()}>
+                  Aplicar
+                </button>
+              </div>
+              {descuentoValido && (
+                <p className="font-label-sm text-label-sm text-success flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-lg">check_circle</span>
+                  ¡Descuento del 20% aplicado!
+                </p>
+              )}
+              {codigoDescuento.trim() && !descuentoValido && (
+                <p className="font-label-sm text-label-sm text-error flex items-center gap-xs">
+                  <span className="material-symbols-outlined text-lg">error</span>
+                  Código inválido
+                </p>
+              )}
+            </div>
+
             <div className="border-t border-outline-variant/30 pt-xl space-y-md">
               <div className="flex justify-between font-body-md text-body-md text-on-surface-variant">
                 <span>Subtotal</span>
-                <span className="text-on-surface">{formatARS(getTotal())}</span>
+                <span className="text-on-surface">{formatARS(totalSinDescuento)}</span>
               </div>
+              {descuentoValido && (
+                <div className="flex justify-between font-body-md text-body-md text-success">
+                  <span>Descuento (20%)</span>
+                  <span className="font-medium">-{formatARS(descuentoMonto)}</span>
+                </div>
+              )}
               <div className="flex justify-between font-body-md text-body-md text-on-surface-variant">
                 <span>Envío</span>
                 <span className="text-secondary font-medium">Gratis</span>
               </div>
               <div className="flex justify-between font-headline-md text-headline-md text-on-surface pt-md border-t border-outline-variant/20">
                 <span>Total</span>
-                <span className="text-primary">{formatARS(getTotal())}</span>
+                <span className="text-primary">{formatARS(totalConDescuento)}</span>
               </div>
             </div>
 
