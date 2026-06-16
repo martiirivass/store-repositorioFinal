@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import { StoreLayout } from "@/layouts/StoreLayout";
 import { HomePage } from "@/features/products/pages/HomePage";
 import { CatalogPage } from "@/features/products/pages/CatalogPage";
+import { ProductDetailPage } from "@/features/products/pages/ProductDetailPage";
 import { CartPage } from "@/features/cart/pages/CartPage";
 import { CheckoutPage } from "@/features/checkout/pages/CheckoutPage";
 import { MyOrdersPage } from "@/features/orders/pages/MyOrdersPage";
@@ -18,6 +19,7 @@ export const router = createBrowserRouter([
     children: [
       { index: true, element: <HomePage /> },
       { path: "catalogo", element: <CatalogPage /> },
+      { path: "producto/:id", element: <ProductDetailPage /> },
       { path: "carrito", element: <CartPage /> },
       { path: "checkout", element: <CheckoutPage /> },
       { path: "mis-pedidos", element: <MyOrdersPage /> },

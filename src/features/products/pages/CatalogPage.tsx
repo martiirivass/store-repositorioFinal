@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import { useProductos } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
 import { getProductImage, HERO_IMAGE } from "@/shared/images";
@@ -52,13 +52,13 @@ export function CatalogPage() {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
             {data?.data.map((p, idx) => (
               <div key={p.id} className="group bg-surface-container-low rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col">
-                <div className="relative aspect-square overflow-hidden bg-surface-container-high">
+                <Link to={`/producto/${p.id}`} className="relative aspect-square overflow-hidden bg-surface-container-high block">
                   <img
                     src={p.imagen_url || getProductImage(p.id, idx)}
                     alt={p.nombre}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />
-                </div>
+                </Link>
                 <div className="p-lg flex flex-col flex-1">
                   <div className="flex justify-between items-start mb-xs gap-sm">
                     <h3 className="font-title-lg text-title-lg text-on-surface group-hover:text-primary transition-colors line-clamp-1">{p.nombre}</h3>

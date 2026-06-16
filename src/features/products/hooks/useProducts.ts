@@ -8,6 +8,14 @@ export function useProductos(params?: { limit?: number; offset?: number; categor
   });
 }
 
+export function useProducto(id: number) {
+  return useQuery({
+    queryKey: ["producto", id],
+    queryFn: () => productService.getById(id),
+    enabled: !!id,
+  });
+}
+
 export function useCategorias() {
   return useQuery({
     queryKey: ["categorias"],
