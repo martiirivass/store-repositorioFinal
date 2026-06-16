@@ -3,7 +3,7 @@ import type { ProductoReadWithRelations, CategoriaRead } from "../types";
 
 export const productService = {
   list: async (params?: { limit?: number; offset?: number; categoria_id?: number; disponible?: boolean; q?: string }) => {
-    const { data } = await api.get("/productos", { params });
+    const { data } = await api.get("/productos/", { params });
     return data as { data: ProductoReadWithRelations[]; total: number };
   },
 

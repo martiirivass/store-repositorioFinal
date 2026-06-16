@@ -87,3 +87,7 @@ export interface DireccionCreate {
   codigo_postal?: string | null;
   es_principal?: boolean;
 }
+
+export interface CancelarPedidoRequest {
+  motivo: string;
+}

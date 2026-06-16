@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useProducto } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
-import { getProductImage } from "@/shared/images";
+import { getProductImage, getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 
 export function ProductDetailPage() {
@@ -50,7 +50,7 @@ export function ProductDetailPage() {
         <div className="lg:col-span-6">
           <div className="aspect-square rounded-xl overflow-hidden bg-surface-container-high border border-outline-variant/30">
             <img
-              src={producto.imagen_url || getProductImage(producto.id, producto.id)}
+              src={getCloudinaryUrl(producto.imagen_url) || getProductImage(producto.id, producto.id)}
               alt={producto.nombre}
               className="w-full h-full object-cover"
             />

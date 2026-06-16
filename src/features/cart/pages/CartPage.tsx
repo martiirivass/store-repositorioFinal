@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { useCartStore } from "@/features/cart/store";
-import { getProductImage } from "@/shared/images";
+import { getProductImage, getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 
 export function CartPage() {
@@ -29,7 +29,7 @@ export function CartPage() {
               <div key={item.producto_id} className="bg-surface-container rounded-lg p-md flex flex-col sm:flex-row items-start sm:items-center gap-lg border border-outline-variant/30 hover:border-primary/50 transition-all duration-300">
                 <div className="w-full sm:w-24 h-48 sm:h-24 rounded overflow-hidden shrink-0 bg-surface-container-high">
                   <img
-                    src={item.imagen_url || getProductImage(item.producto_id, item.producto_id)}
+                    src={getCloudinaryUrl(item.imagen_url) || getProductImage(item.producto_id, item.producto_id)}
                     alt={item.nombre}
                     className="w-full h-full object-cover"
                   />

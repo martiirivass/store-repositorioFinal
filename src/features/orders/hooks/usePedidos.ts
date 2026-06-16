@@ -22,7 +22,7 @@ export function useCrearPedido() {
 export function useCancelarPedido() {
   const qc = useQueryClient();
   return useMutation({
-    mutationFn: (id: number) => pedidoService.cancel(id),
+    mutationFn: ({ id, motivo }: { id: number; motivo: string }) => pedidoService.cancel(id, motivo),
     onSuccess: () => qc.invalidateQueries({ queryKey: QUERY_KEY }),
   });
 }

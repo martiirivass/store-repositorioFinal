@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useMisPedidos, useCancelarPedido } from "../hooks/usePedidos";
 import { getProductImage } from "@/shared/images";
 import { useAuthStore } from "@/features/auth/store";
@@ -19,6 +20,8 @@ export function MyOrdersPage() {
   const { data, isLoading } = useMisPedidos();
   const { mutate: cancelar } = useCancelarPedido();
   const { isLogged } = useAuthStore();
+  const [cancelandoId, setCancelandoId] = useState<number | null>(null);
+  const [motivoInput, setMotivoInput] = useState("");
 
   // Connect to the latest active order for real-time updates
   const latestActiveOrderId = data?.data
@@ -117,7 +120,7 @@ export function MyOrdersPage() {
 
                   <div className="flex flex-wrap justify-end gap-md pt-md border-t border-outline-variant">
                     {cancelable && (
-                      <button onClick={() => cancelar(pedido.id)}
+                      <button onClick={() => setCancelandoId(pedido.id)}
                         className="px-xl py-md border border-error/50 text-error hover:bg-error/10 transition-colors font-label-lg text-label-lg rounded-lg active:scale-95"
                       >
                         Cancelar pedido
@@ -131,6 +134,33 @@ export function MyOrdersPage() {
               </article>
             );
           })}
+        </div>
+      )}
+
+      {cancelandoId && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-gutter" onClick={() => setCancelandoId(null)}>
+          <div className="bg-surface-container-high border border-outline-variant rounded-xl p-xl max-w-md w-full space-y-lg" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-title-lg text-title-lg text-on-surface">Cancelar pedido</h3>
+            <p className="font-body-md text-body-md text-on-surface-variant">Contanos el motivo de la cancelación:</p>
+            <textarea
+              value={motivoInput}
+              onChange={(e) => setMotivoInput(e.target.value)}
+              className="w-full bg-surface-container border border-outline-variant rounded-lg p-md font-body-md text-body-md text-on-surface placeholder:text-on-surface-variant/50 resize-none"
+              rows={3}
+              placeholder="Ej: Quiero cambiar mi pedido..."
+            />
+            <div className="flex justify-end gap-md">
+              <button onClick={() => { setCancelandoId(null); setMotivoInput(""); }}
+                className="px-xl py-md border border-outline-variant text-on-surface rounded-lg font-label-lg">
+                Volver
+              </button>
+              <button onClick={() => { if(motivoInput.trim()) { cancelar({ id: cancelandoId, motivo: motivoInput }); setCancelandoId(null); setMotivoInput(""); } }}
+                className="px-xl py-md bg-error text-on-error rounded-lg font-label-lg disabled:opacity-50"
+                disabled={!motivoInput.trim()}>
+                Confirmar cancelación
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

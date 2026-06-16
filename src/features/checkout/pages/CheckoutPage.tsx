@@ -7,7 +7,7 @@ import { useCheckoutForm } from "@/features/checkout/hooks/useCheckoutForm";
 import { useCheckoutSubmit } from "@/features/checkout/hooks/useCheckoutSubmit";
 import { CheckoutSuccessScreen } from "@/features/checkout/components/CheckoutSuccessScreen";
 import { PaymentFormSection } from "@/features/checkout/components/PaymentFormSection";
-import { getProductImage } from "@/shared/images";
+import { getProductImage, getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 
 export function CheckoutPage() {
@@ -51,7 +51,7 @@ export function CheckoutPage() {
             {items.map((item) => (
               <div key={item.producto_id} className="bg-surface-container rounded-lg p-md flex items-center gap-lg border border-outline-variant/30">
                 <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-surface-container-high">
-                  <img src={item.imagen_url || getProductImage(item.producto_id, item.producto_id)} alt={item.nombre} className="w-full h-full object-cover" />
+                  <img src={getCloudinaryUrl(item.imagen_url) || getProductImage(item.producto_id, item.producto_id)} alt={item.nombre} className="w-full h-full object-cover" />
                 </div>
                 <div className="flex-grow">
                   <p className="font-label-lg text-label-lg text-on-surface">{item.nombre}</p>

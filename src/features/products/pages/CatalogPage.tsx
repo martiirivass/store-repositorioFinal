@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useProductos } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
-import { getProductImage, HERO_IMAGE } from "@/shared/images";
+import { getProductImage, HERO_IMAGE, getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 
 export function CatalogPage() {
@@ -54,7 +54,7 @@ export function CatalogPage() {
               <div key={p.id} className="group bg-surface-container-low rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col">
                 <Link to={`/producto/${p.id}`} className="relative aspect-square overflow-hidden bg-surface-container-high block">
                   <img
-                    src={p.imagen_url || getProductImage(p.id, idx)}
+                    src={getCloudinaryUrl(p.imagen_url) || getProductImage(p.id, idx)}
                     alt={p.nombre}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                   />

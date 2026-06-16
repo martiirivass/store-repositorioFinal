@@ -38,6 +38,27 @@ export function getProductImage(productId: number, _index: number): string {
   return PRODUCT_IMAGES_POOL[Math.abs(productId) % PRODUCT_IMAGES_POOL.length];
 }
 
+/**
+ * Apply Cloudinary transformations to image URLs.
+ * If the URL is from Cloudinary, inject f_auto,q_auto,c_fill with dimensions.
+ */
+export function getCloudinaryUrl(url: string, width = 400, height = 300): string {
+  if (!url) return url;
+
+  // Only transform Cloudinary URLs
+  if (!url.includes("cloudinary.com")) return url;
+
+  // Find the upload folder path (last "/vXXXXX/" segment before filename)
+  const match = url.match(/\/v\d+\//);
+  if (!match) return url;
+
+  const uploadIndex = match.index! + match[0].length;
+  const baseUrl = url.substring(0, uploadIndex);
+  const filename = url.substring(uploadIndex);
+
+  return `${baseUrl}f_auto,q_auto,c_fill,w_${width},h_${height}/${filename}`;
+}
+
 // Colores pastel/gastronómicos para el avatar por inicial
 const CATEGORY_AVATAR_COLORS: [string, string][] = [
   ["#2a4c69", "#94ccff"], // azul

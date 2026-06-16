@@ -3,7 +3,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useWsStore } from "@/store/wsStore";
 
 function getWsBaseUrl(): string {
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8001";
   return apiUrl.replace(/\/api\/v1\/?$/, "").replace(/^http/, "ws");
 }
 
