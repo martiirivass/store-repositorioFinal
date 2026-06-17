@@ -78,6 +78,16 @@ export interface PedidoCreate {
   referencia_pago?: string | null;
 }
 
+export interface DireccionUpdate {
+  alias?: string | null;
+  linea1?: string;
+  linea2?: string | null;
+  ciudad?: string;
+  provincia?: string | null;
+  codigo_postal?: string | null;
+  es_principal?: boolean;
+}
+
 export interface DireccionCreate {
   alias?: string | null;
   linea1: string;

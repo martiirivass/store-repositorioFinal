@@ -11,7 +11,7 @@ export function CartPage() {
 
   if (items.length === 0) {
     return (
-      <div className="max-w-[1400px] mx-auto px-margin-desktop py-2xl text-center">
+      <div className="max-w-[1400px] mx-auto px-gutter md:px-margin-desktop py-2xl text-center">
         <span className="material-symbols-outlined text-[64px] text-on-surface-variant/30 mb-lg">shopping_cart</span>
         <h2 className="font-headline-lg text-headline-lg text-on-surface mb-md">Tu carrito está vacío</h2>
         <p className="text-on-surface-variant font-body-lg mb-xl">Agregá productos del catálogo para empezar.</p>
@@ -23,14 +23,14 @@ export function CartPage() {
   }
 
   return (
-      <div className="max-w-[1400px] mx-auto px-margin-desktop py-2xl">
+      <div className="max-w-[1400px] mx-auto px-gutter md:px-margin-desktop py-2xl">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-xl">
         <div className="lg:col-span-7 space-y-lg">
           <h1 className="font-headline-lg text-headline-lg text-on-surface mb-lg">Tu Carrito ({items.length} items)</h1>
           <div className="space-y-md">
             {items.map((item) => (
               <div key={item.producto_id} className="bg-surface-container rounded-lg p-md flex flex-col sm:flex-row items-start sm:items-center gap-lg border border-outline-variant/30 hover:border-primary/50 transition-all duration-300">
-                <div className="w-full sm:w-24 h-48 sm:h-24 rounded overflow-hidden shrink-0 bg-surface-container-high">
+                <div className="w-full sm:w-24 h-32 sm:h-24 rounded overflow-hidden shrink-0 bg-surface-container-high">
                   <img
                     src={getCloudinaryUrl(item.imagen_url) || getProductImage(item.producto_id, item.producto_id)}
                     alt={item.nombre}

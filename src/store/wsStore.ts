@@ -10,6 +10,7 @@ let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 let currentUrl = "";
 let reconnectCount = 0;
 let intentionalClose = false;
+let authRefreshUrl: string | null = null;
 
 interface WSState {
   connected: boolean;
@@ -19,6 +20,20 @@ interface WSState {
   connect: (url: string) => void;
   disconnect: () => void;
   send: (data: string) => void;
+  setAuthRefreshUrl: (url: string) => void;
+}
+
+async function tryRefreshToken(): Promise<boolean> {
+  if (!authRefreshUrl) return false;
+  try {
+    const resp = await fetch(authRefreshUrl, {
+      method: "POST",
+      credentials: "include",
+    });
+    return resp.ok;
+  } catch {
+    return false;
+  }
 }
 
 export const useWsStore = create<WSState>((set) => ({
@@ -26,6 +41,10 @@ export const useWsStore = create<WSState>((set) => ({
   reconnectAttempts: 0,
   lastMessage: null,
   attempted: false,
+
+  setAuthRefreshUrl: (url: string) => {
+    authRefreshUrl = url;
+  },
 
   connect: (url: string) => {
     // Skip if already connected to the same URL
@@ -78,13 +97,20 @@ export const useWsStore = create<WSState>((set) => ({
         }
       };
 
-      ws.onclose = (event: CloseEvent) => {
+      ws.onclose = async (event: CloseEvent) => {
         set({ connected: false });
-        // Don't reconnect on auth errors (4001=no auth, 4003=forbidden)
-        const isAuthError = event.code === 4001 || event.code === 4003;
-        if (!intentionalClose && !isAuthError) {
-          scheduleReconnect();
+        if (intentionalClose) return;
+
+        // Auth error (4001 = no auth, 4003 = forbidden) → try refresh
+        if (event.code === 4001 || event.code === 4003) {
+          const refreshed = await tryRefreshToken();
+          if (refreshed) {
+            scheduleReconnect();
+          }
+          return;
         }
+
+        scheduleReconnect();
       };
 
       ws.onerror = () => {

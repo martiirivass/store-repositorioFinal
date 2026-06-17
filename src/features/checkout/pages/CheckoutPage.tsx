@@ -59,7 +59,7 @@ export function CheckoutPage() {
 
   // ─── Checkout ─────────────────────────────────────────────────────
   return (
-    <div className="max-w-[1400px] mx-auto px-margin-desktop py-2xl">
+    <div className="max-w-[1400px] mx-auto px-gutter md:px-margin-desktop py-2xl">
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-xl">
         <div className="lg:col-span-7 space-y-lg">
           <h1 className="font-headline-lg text-headline-lg text-on-surface mb-lg">Checkout</h1>
@@ -94,7 +94,7 @@ export function CheckoutPage() {
           <div className="bg-surface-container-high rounded-lg p-xl border border-outline-variant/30 sticky top-24 shadow-2xl">
             <h2 className="font-headline-md text-headline-md text-on-surface mb-xl">Detalles de Envío</h2>
 
-            {direcciones && direcciones.length > 0 && (
+            {direcciones && direcciones.length > 0 ? (
               <div className="mb-lg space-y-sm">
                 <label className="font-label-sm text-label-sm text-on-surface-variant uppercase tracking-widest">Dirección</label>
                 {direcciones.map((d) => (
@@ -104,6 +104,26 @@ export function CheckoutPage() {
                     <p className="font-body-md text-body-md text-on-surface-variant">{d.linea1}, {d.ciudad}</p>
                   </button>
                 ))}
+                <button
+                  onClick={() => navigate("/mis-direcciones")}
+                  className="w-full text-left mt-sm font-label-sm text-label-sm text-primary hover:underline transition-all"
+                >
+                  Gestionar direcciones
+                </button>
+              </div>
+            ) : (
+              <div className="mb-lg p-lg border border-dashed border-outline-variant rounded-lg text-center">
+                <span className="material-symbols-outlined text-3xl text-on-surface-variant/40 mb-sm">location_off</span>
+                <p className="font-body-md text-body-md text-on-surface-variant mb-md">
+                  No tenés direcciones cargadas.
+                </p>
+                <button
+                  onClick={() => navigate("/mis-direcciones")}
+                  className="inline-flex items-center gap-xs px-lg py-sm bg-primary text-on-primary font-label-sm text-label-sm rounded-lg hover:opacity-90 transition-all active:scale-95"
+                >
+                  <span className="material-symbols-outlined text-lg">add_location</span>
+                  Agregar dirección
+                </button>
               </div>
             )}
 

@@ -19,6 +19,13 @@ export function useOrderStatusWS(pedidoId?: number | null) {
   const lastMessage = useWsStore((s) => s.lastMessage);
   const connect = useWsStore((s) => s.connect);
   const disconnect = useWsStore((s) => s.disconnect);
+  const setAuthRefreshUrl = useWsStore((s) => s.setAuthRefreshUrl);
+
+  // ── Configure auth refresh endpoint for WS token refresh ────────────
+  useEffect(() => {
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8001";
+    setAuthRefreshUrl(`${apiUrl}/auth/refresh`);
+  }, [setAuthRefreshUrl]);
 
   // ── Connect to order-specific WS feed ───────────────────────────────
   useEffect(() => {

@@ -1,4 +1,4 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useProductos, useCategorias } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
@@ -9,6 +9,7 @@ import { PageSkeleton } from "@/shared/components/Skeleton";
 export function CatalogPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [page, setPage] = useState(0);
+  const [searchInput, setSearchInput] = useState("");
   const [search, setSearch] = useState("");
   const limit = 12;
   const categoria = searchParams.get("categoria") || undefined;
@@ -24,6 +25,28 @@ export function CatalogPage() {
   const addItem = useCartStore((s) => s.addItem);
   const totalPages = data ? Math.ceil(data.total / limit) : 0;
 
+  // Debounce: commit search 300ms after user stops typing
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (searchInput !== search) {
+        setSearch(searchInput);
+        setPage(0);
+      }
+    }, 300);
+    return () => clearTimeout(timer);
+  }, [searchInput]);
+
+  const triggerSearch = () => {
+    setSearch(searchInput);
+    setPage(0);
+  };
+
+  const handleSearchKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter") {
+      triggerSearch();
+    }
+  };
+
   const seleccionarCategoria = (id: number | null) => {
     setPage(0);
     const params = new URLSearchParams(searchParams);
@@ -36,8 +59,8 @@ export function CatalogPage() {
   };
 
   return (
-    <div className="max-w-[1400px] mx-auto px-margin-desktop py-xl">
-      <section className="relative h-[280px] rounded-lg overflow-hidden mb-2xl border border-outline-variant">
+    <div className="max-w-[1400px] mx-auto px-gutter md:px-margin-desktop py-xl">
+      <section className="relative h-[200px] md:h-[280px] rounded-lg overflow-hidden mb-2xl border border-outline-variant">
         <img src={HERO_IMAGE} alt="" className="absolute inset-0 w-full h-full object-cover" />
         <div className="absolute inset-0 bg-gradient-to-r from-black/90 via-black/40 to-transparent flex flex-col justify-center px-2xl">
           <span className="text-primary font-label-lg mb-sm tracking-widest uppercase">Catálogo</span>
@@ -49,17 +72,32 @@ export function CatalogPage() {
       </section>
 
       <div className="mb-xl flex gap-sm">
-        <input type="text"
-          value={search} onChange={(e) => { setSearch(e.target.value); setPage(0); }}
-          className="flex-1 max-w-md bg-surface-container-low border border-outline-variant/40 rounded-lg px-lg py-md font-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-          placeholder="Ej: Pizzas" />
+        <div className="relative flex-1 max-w-md">
+          <input type="text"
+            ref={inputRef}
+            value={searchInput} onChange={(e) => { setSearchInput(e.target.value); }}
+            onKeyDown={handleSearchKeyDown}
+            className="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg pl-lg pr-xl py-md font-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
+            placeholder="Buscar por nombre..." />
+          {searchInput && (
+            <button onClick={() => { setSearchInput(""); setSearch(""); setPage(0); inputRef.current?.focus(); }}
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
+              <span className="material-symbols-outlined text-xl">close</span>
+            </button>
+          )}
+        </div>
         <button
-          onClick={() => inputRef.current?.focus()}
+          onClick={triggerSearch}
           className="bg-primary text-on-primary px-lg py-md rounded-lg font-label-lg hover:brightness-110 transition-all active:scale-95"
         >
           <span className="material-symbols-outlined">search</span>
         </button>
       </div>
+      {search && (
+        <p className="font-body-md text-body-md text-on-surface-variant mb-md -mt-lg">
+          Resultados para: <span className="text-on-surface font-medium">&ldquo;{search}&rdquo;</span>
+        </p>
+      )}
 
       <div className="flex flex-wrap gap-sm mb-xl">
         <button

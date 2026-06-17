@@ -17,7 +17,7 @@ export function CheckoutSuccessScreen({ data }: Props) {
   const navigate = useNavigate();
 
   return (
-    <div className="max-w-[600px] mx-auto px-margin-desktop py-2xl text-center">
+    <div className="max-w-[600px] mx-auto px-gutter md:px-margin-desktop py-2xl text-center">
       <div className="bg-surface-container-high rounded-2xl p-xl border border-outline-variant/30 shadow-2xl">
         <div className="w-20 h-20 rounded-full bg-green-500/20 mx-auto mb-xl flex items-center justify-center">
           <span className="material-symbols-outlined text-[48px] text-green-400">check_circle</span>

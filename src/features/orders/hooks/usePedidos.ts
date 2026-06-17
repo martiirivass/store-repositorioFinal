@@ -1,5 +1,6 @@
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { pedidoService } from "../services/pedidoService";
+import type { DireccionCreate, DireccionUpdate } from "../types";
 
 const QUERY_KEY = ["pedidos"];
 
@@ -26,9 +27,44 @@ export function useCancelarPedido() {
   });
 }
 
+const DIRECCIONES_KEY = ["direcciones"];
+
 export function useDirecciones() {
   return useQuery({
-    queryKey: ["direcciones"],
+    queryKey: DIRECCIONES_KEY,
     queryFn: () => pedidoService.getDirecciones(),
+  });
+}
+
+export function useCrearDireccion() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (data: DireccionCreate) => pedidoService.createDireccion(data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: DIRECCIONES_KEY }),
+  });
+}
+
+export function useActualizarDireccion() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, data }: { id: number; data: DireccionUpdate }) =>
+      pedidoService.updateDireccion(id, data),
+    onSuccess: () => qc.invalidateQueries({ queryKey: DIRECCIONES_KEY }),
+  });
+}
+
+export function useEliminarDireccion() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => pedidoService.deleteDireccion(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: DIRECCIONES_KEY }),
+  });
+}
+
+export function useMarcarPrincipal() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (id: number) => pedidoService.marcarPrincipal(id),
+    onSuccess: () => qc.invalidateQueries({ queryKey: DIRECCIONES_KEY }),
   });
 }

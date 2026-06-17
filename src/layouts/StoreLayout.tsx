@@ -1,10 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
 import { ConnectionBadge } from "@/components/ConnectionBadge";
 
 export function StoreLayout() {
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const isLogged = useAuthStore((s) => s.isLogged);
   const isLoading = useAuthStore((s) => s.isLoading);
   const user = useAuthStore((s) => s.user);
@@ -20,8 +21,11 @@ export function StoreLayout() {
 
   const handleLogout = async () => {
     await logout();
+    setMobileMenuOpen(false);
     navigate("/");
   };
+
+  const closeMobile = () => setMobileMenuOpen(false);
 
   if (isLoading) {
     return (
@@ -46,11 +50,14 @@ export function StoreLayout() {
               <Link to="/" className="font-label-lg text-label-lg text-primary border-b-2 border-primary font-bold pb-1">Inicio</Link>
               <Link to="/catalogo" className="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Catálogo</Link>
               {isLogged && (
-                <Link to="/mis-pedidos" className="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Mis Pedidos</Link>
+                <>
+                  <Link to="/mis-pedidos" className="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Mis Pedidos</Link>
+                  <Link to="/mis-direcciones" className="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Mis Direcciones</Link>
+                </>
               )}
             </nav>
           </div>
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-3">
             <Link to="/carrito" className="relative text-on-surface-variant hover:text-primary transition-all active:scale-95">
               <span className="material-symbols-outlined">shopping_cart</span>
               {cartCount > 0 && (
@@ -62,21 +69,89 @@ export function StoreLayout() {
             <div className="hidden sm:flex mr-2">
               <ConnectionBadge />
             </div>
+
+            {/* Hamburger — mobile only */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="md:hidden text-on-surface-variant hover:text-primary transition-all active:scale-95"
+              aria-label="Menú de navegación"
+            >
+              <span className="material-symbols-outlined">{mobileMenuOpen ? "close" : "menu"}</span>
+            </button>
+
             {isLogged ? (
-              <div className="flex items-center gap-4">
-                <span className="hidden sm:inline font-label-sm text-label-sm text-on-surface-variant">{user?.nombre}</span>
+              <div className="hidden md:flex items-center gap-4">
+                <span className="font-label-sm text-label-sm text-on-surface-variant">{user?.nombre}</span>
                 <button onClick={handleLogout} className="text-on-surface-variant hover:text-error transition-colors">
                   <span className="material-symbols-outlined">logout</span>
                 </button>
               </div>
             ) : (
-              <Link to="/login" className="text-on-surface-variant hover:text-primary transition-all active:scale-95">
+              <Link to="/login" className="hidden md:flex text-on-surface-variant hover:text-primary transition-all active:scale-95">
+                <span className="material-symbols-outlined">account_circle</span>
+              </Link>
+            )}
+
+            {/* Avatar icon — mobile only */}
+            {isLogged ? (
+              <button onClick={handleLogout} className="md:hidden text-on-surface-variant hover:text-error transition-colors">
+                <span className="material-symbols-outlined">logout</span>
+              </button>
+            ) : (
+              <Link to="/login" className="md:hidden text-on-surface-variant hover:text-primary transition-all">
                 <span className="material-symbols-outlined">account_circle</span>
               </Link>
             )}
           </div>
         </div>
       </header>
+
+      {/* Mobile Drawer */}
+      {mobileMenuOpen && (
+        <>
+          <div className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm md:hidden" onClick={closeMobile} />
+          <aside className="fixed top-20 left-0 z-50 w-72 h-[calc(100vh-5rem)] bg-surface border-r border-outline-variant/30 shadow-2xl md:hidden overflow-y-auto">
+            <nav className="flex flex-col gap-1 p-lg">
+              <Link to="/" onClick={closeMobile}
+                className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                <span className="material-symbols-outlined text-xl">home</span>
+                Inicio
+              </Link>
+              <Link to="/catalogo" onClick={closeMobile}
+                className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                <span className="material-symbols-outlined text-xl">storefront</span>
+                Catálogo
+              </Link>
+              {isLogged && (
+                <>
+                  <Link to="/mis-pedidos" onClick={closeMobile}
+                    className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                    <span className="material-symbols-outlined text-xl">receipt_long</span>
+                    Mis Pedidos
+                  </Link>
+                  <Link to="/mis-direcciones" onClick={closeMobile}
+                    className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                    <span className="material-symbols-outlined text-xl">location_on</span>
+                    Mis Direcciones
+                  </Link>
+                </>
+              )}
+              <hr className="border-outline-variant/20 my-md" />
+              <Link to="/contacto" onClick={closeMobile}
+                className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                <span className="material-symbols-outlined text-xl">contact_support</span>
+                Contacto
+              </Link>
+              {isLogged && (
+                <span className="flex items-center gap-3 px-md py-lg font-label-sm text-label-sm text-on-surface-variant/60">
+                  <span className="material-symbols-outlined text-lg">person</span>
+                  {user?.nombre}
+                </span>
+              )}
+            </nav>
+          </aside>
+        </>
+      )}
       <main className="flex-1">
         <Outlet />
       </main>
@@ -86,7 +161,7 @@ export function StoreLayout() {
           <div className="flex gap-xl text-on-surface-variant font-label-sm text-label-sm">
             <Link to="/" className="hover:text-primary transition-colors">Inicio</Link>
             <Link to="/catalogo" className="hover:text-primary transition-colors">Catálogo</Link>
-            <span className="hover:text-primary transition-colors cursor-pointer">Contacto</span>
+            <Link to="/contacto" className="hover:text-primary transition-colors">Contacto</Link>
           </div>
           <p className="font-body-md text-body-md text-on-surface-variant mt-md md:mt-0">© 2026 GastroStore. Functional Luxury.</p>
         </div>

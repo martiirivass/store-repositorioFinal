@@ -1,5 +1,5 @@
 import { api } from "@/shared/api";
-import type { PedidoReadWithDetalles, PedidoCreate, DireccionRead, DireccionCreate } from "../types";
+import type { PedidoReadWithDetalles, PedidoCreate, DireccionRead, DireccionCreate, DireccionUpdate } from "../types";
 
 export const pedidoService = {
   create: async (data: PedidoCreate) => {
@@ -29,6 +29,20 @@ export const pedidoService = {
 
   createDireccion: async (dir: DireccionCreate) => {
     const { data } = await api.post("/direcciones/", dir);
+    return data as DireccionRead;
+  },
+
+  updateDireccion: async (id: number, dir: DireccionUpdate) => {
+    const { data } = await api.put(`/direcciones/${id}`, dir);
+    return data as DireccionRead;
+  },
+
+  deleteDireccion: async (id: number) => {
+    await api.delete(`/direcciones/${id}`);
+  },
+
+  marcarPrincipal: async (id: number) => {
+    const { data } = await api.patch(`/direcciones/${id}/principal`);
     return data as DireccionRead;
   },
 };

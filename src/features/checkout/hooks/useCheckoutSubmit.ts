@@ -63,7 +63,11 @@ export function useCheckoutSubmit() {
       });
       setShowSuccess(true);
     } catch (err: any) {
-      onError(err?.response?.data?.detail || "Error al crear el pedido");
+      const detail = err?.response?.data?.detail;
+      const msg = Array.isArray(detail)
+        ? detail.map((d: any) => d.msg).join("; ")
+        : detail || "Error al crear el pedido";
+      onError(msg);
     }
   };
 

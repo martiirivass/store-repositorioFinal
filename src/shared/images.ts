@@ -42,8 +42,8 @@ export function getProductImage(productId: number, _index: number): string {
  * Apply Cloudinary transformations to image URLs.
  * If the URL is from Cloudinary, inject f_auto,q_auto,c_fill with dimensions.
  */
-export function getCloudinaryUrl(url: string, width = 400, height = 300): string {
-  if (!url) return url;
+export function getCloudinaryUrl(url: string | null | undefined, width = 400, height = 300): string {
+  if (!url) return "";
 
   // Only transform Cloudinary URLs
   if (!url.includes("cloudinary.com")) return url;

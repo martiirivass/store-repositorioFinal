@@ -91,7 +91,7 @@ export function MyOrdersPage() {
                     <div className="flex items-center gap-xl">
                       <div className="text-right">
                         <p className="font-label-sm text-label-sm text-on-surface-variant">Total</p>
-                        <p className="font-title-lg text-title-lg text-on-surface font-bold">${pedido.total.toFixed(2)}</p>
+                        <p className="font-title-lg text-title-lg text-on-surface font-bold">${Number(pedido.total ?? 0).toFixed(2)}</p>
                       </div>
                       <span className={`px-md py-base rounded-lg font-label-sm text-label-sm border backdrop-blur-sm ${estadoInfo.color}`}>
                         {estadoInfo.label}
@@ -123,22 +123,18 @@ export function MyOrdersPage() {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-md">
-                    {pedido.detalles?.slice(0, 2).map((det) => (
-                      <div key={`${det.pedido_id}-${det.producto_id}`} className="flex items-center gap-md bg-surface-container/50 p-md rounded-lg border border-outline-variant">
-                        <div className="w-12 h-12 rounded-lg overflow-hidden shrink-0">
+                    {pedido.detalles?.map((det) => (
+                      <div key={`${det.pedido_id}-${det.producto_id}`} className="flex items-start gap-md bg-surface-container/50 p-md rounded-lg border border-outline-variant">
+                        <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0">
                           <img src={getProductImage(det.producto_id, det.producto_id)} alt={det.nombre_snapshot} className="w-full h-full object-cover" />
                         </div>
-                        <div className="flex-grow">
-                          <p className="font-label-lg text-label-lg text-on-surface">{det.nombre_snapshot}</p>
-                          <p className="font-body-md text-body-md text-on-surface-variant">{det.cantidad}x ${det.precio_snapshot.toFixed(2)}</p>
+                        <div className="flex-grow min-w-0">
+                          <p className="font-label-lg text-label-lg text-on-surface break-words">{det.nombre_snapshot}</p>
+                          <p className="font-body-md text-body-md text-on-surface-variant">{det.cantidad}x ${Number(det.precio_snapshot ?? 0).toFixed(2)}</p>
+                          <p className="font-label-sm text-label-sm text-on-surface-variant/60 mt-xs">Subtotal: ${Number(det.subtotal_snap ?? 0).toFixed(2)}</p>
                         </div>
                       </div>
                     ))}
-                    {pedido.detalles && pedido.detalles.length > 2 && (
-                      <div className="flex items-center justify-center bg-surface-container/50 p-md rounded-lg border border-outline-variant text-on-surface-variant font-label-sm">
-                        +{pedido.detalles.length - 2} más
-                      </div>
-                    )}
                   </div>
 
                   <div className="flex flex-wrap justify-end gap-md pt-md border-t border-outline-variant">

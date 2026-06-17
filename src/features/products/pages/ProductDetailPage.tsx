@@ -18,7 +18,7 @@ export function ProductDetailPage() {
 
   if (isError || !producto) {
     return (
-      <div className="max-w-[1400px] mx-auto px-margin-desktop py-2xl text-center">
+      <div className="max-w-[1400px] mx-auto px-gutter md:px-margin-desktop py-2xl text-center">
         <span className="material-symbols-outlined text-[64px] text-on-surface-variant/30 mb-lg">search_off</span>
         <h2 className="font-headline-lg text-headline-lg text-on-surface mb-md">Producto no encontrado</h2>
         <p className="text-on-surface-variant font-body-lg mb-xl">El producto que buscás no existe o fue eliminado.</p>
@@ -34,7 +34,7 @@ export function ProductDetailPage() {
   const ingredientesSinAlergeno = producto.ingredientes?.filter((i) => !i.es_alergeno) || [];
 
   return (
-    <div className="max-w-[1400px] mx-auto px-margin-desktop py-xl">
+    <div className="max-w-[1400px] mx-auto px-gutter md:px-margin-desktop py-xl">
       <button onClick={() => navigate(-1)} className="flex items-center gap-sm text-on-surface-variant hover:text-primary transition-colors mb-xl font-label-lg">
         <span className="material-symbols-outlined">arrow_back</span>
         Volver

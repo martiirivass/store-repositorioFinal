@@ -24,7 +24,11 @@ export function ClientLoginPage() {
       }
       navigate("/");
     } catch (err: any) {
-      setError(err?.response?.data?.detail || "Error de autenticación");
+      const detail = err?.response?.data?.detail;
+      const msg = Array.isArray(detail)
+        ? detail.map((d: any) => d.msg).join("; ")
+        : detail || "Error de autenticación";
+      setError(msg);
     } finally {
       setLoading(false);
     }

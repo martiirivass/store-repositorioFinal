@@ -33,7 +33,7 @@ export function HomePage() {
         <div className="absolute inset-0 bg-gradient-to-r from-background via-background/60 to-background/20 z-10" />
         <div className="absolute inset-0 bg-gradient-to-t from-background/40 via-transparent to-transparent z-10" />
 
-        <div className="relative z-20 flex flex-col justify-center h-full px-margin-desktop max-w-[1400px] mx-auto">
+        <div className="relative z-20 flex flex-col justify-center h-full px-gutter md:px-margin-desktop max-w-[1400px] mx-auto">
           {/* Badge */}
           <div className="inline-flex items-center gap-2 bg-white/10 backdrop-blur-sm border border-white/20 rounded-full px-4 py-2 mb-6 w-fit">
             <span className="w-2 h-2 rounded-full bg-green-400 animate-pulse" />
@@ -62,18 +62,18 @@ export function HomePage() {
             >
               Explorar Menú
             </Link>
-            <button
+            <span
               className="border border-outline-variant/60 text-on-surface font-label-lg text-label-lg px-10 py-4 rounded-xl
-                         hover:bg-white/5 hover:border-outline-variant transition-all backdrop-blur-sm"
+                         opacity-60 cursor-default"
             >
               Nuestra Historia
-            </button>
+            </span>
           </div>
         </div>
       </section>
 
       {/* Category Circles — desde backend o fallback hardcodeado */}
-      <section className="py-16 px-margin-desktop max-w-[1400px] mx-auto">
+      <section className="py-16 px-gutter md:px-margin-desktop max-w-[1400px] mx-auto">
         <div className="flex flex-wrap justify-center gap-8 md:gap-12">
           {(categorias.length > 0 ? categorias : FALLBACK_CATEGORIES.map((n) => ({ id: 0, nombre: n }))).map((cat) => {
             const img = getCloudinaryUrl((cat as CategoriaRead).imagen_url) || getCategoryImage(cat.nombre, true);
@@ -99,7 +99,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="py-16 px-margin-desktop max-w-[1400px] mx-auto">
+      <section className="py-16 px-gutter md:px-margin-desktop max-w-[1400px] mx-auto">
         <div className="flex justify-between items-end mb-10">
           <div>
             <h2 className="font-headline-lg text-headline-lg text-on-surface mb-2">Selección Destacada</h2>
@@ -138,7 +138,7 @@ export function HomePage() {
         </div>
       </section>
 
-      <section className="px-margin-desktop mb-16 max-w-[1400px] mx-auto">
+      <section className="px-gutter md:px-margin-desktop mb-16 max-w-[1400px] mx-auto">
         <div className="bg-surface-container-high rounded-2xl overflow-hidden flex flex-col md:flex-row items-center border border-outline-variant">
           <div className="w-full md:w-1/2 p-12 lg:p-16">
             <div className="bg-tertiary-container/20 text-tertiary px-3 py-1 rounded inline-block font-label-sm text-label-sm mb-6">EDICIÓN LIMITADA</div>
