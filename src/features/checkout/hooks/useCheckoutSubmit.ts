@@ -51,6 +51,7 @@ export function useCheckoutSubmit() {
       const pedido = await mutateAsync(params);
 
       if (params.formaPago === "MERCADOPAGO") {
+        clearCart();
         navigate(`/pagar/${pedido.id}`);
         return;
       }
