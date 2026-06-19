@@ -9,6 +9,7 @@ export interface AuthStore {
   user: User | null;
   isLogged: boolean;
   isLoading: boolean;
+  accessToken: string | null;
   checkAuth: () => Promise<void>;
   login: (email: string, password: string) => Promise<void>;
   register: (nombre: string, email: string, password: string) => Promise<void>;

@@ -1,9 +1,10 @@
 import { useEffect } from "react";
 import { useQueryClient } from "@tanstack/react-query";
 import { useWsStore } from "@/store/wsStore";
+import { useAuthStore } from "@/features/auth/store";
 
 function getWsBaseUrl(): string {
-  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8001";
+  const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
   return apiUrl.replace(/\/api\/v1\/?$/, "").replace(/^http/, "ws");
 }
 
@@ -23,15 +24,18 @@ export function useOrderStatusWS(pedidoId?: number | null) {
 
   // ── Configure auth refresh endpoint for WS token refresh ────────────
   useEffect(() => {
-    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8001";
-    setAuthRefreshUrl(`${apiUrl}/auth/refresh`);
+    const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000";
+    setAuthRefreshUrl(`${apiUrl}/api/v1/auth/refresh`);
   }, [setAuthRefreshUrl]);
 
   // ── Connect to order-specific WS feed ───────────────────────────────
   useEffect(() => {
     if (!pedidoId) return;
 
-    const wsUrl = `${getWsBaseUrl()}/ws/pedidos/${pedidoId}`;
+    const token = useAuthStore.getState().accessToken;
+    const wsUrl = token
+      ? `${getWsBaseUrl()}/ws/pedidos/${pedidoId}?token=${token}`
+      : `${getWsBaseUrl()}/ws/pedidos/${pedidoId}`;
     connect(wsUrl);
 
     return () => {

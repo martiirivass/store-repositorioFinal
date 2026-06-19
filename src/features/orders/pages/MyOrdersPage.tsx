@@ -1,6 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useMisPedidos, useCancelarPedido } from "../hooks/usePedidos";
-import { getProductImage } from "@/shared/images";
+import type { DetallePedidoRead } from "../types";
 import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
 import { useOrderStatusWS } from "@/hooks/useOrderStatusWS";
@@ -126,7 +126,9 @@ export function MyOrdersPage() {
                     {pedido.detalles?.map((det) => (
                       <div key={`${det.pedido_id}-${det.producto_id}`} className="flex items-start gap-md bg-surface-container/50 p-md rounded-lg border border-outline-variant">
                         <div className="w-14 h-14 rounded-lg overflow-hidden shrink-0">
-                          <img src={getProductImage(det.producto_id, det.producto_id)} alt={det.nombre_snapshot} className="w-full h-full object-cover" />
+                          <div className="w-full h-full flex items-center justify-center">
+                            <span className="material-symbols-outlined text-xl text-on-surface-variant/30">image</span>
+                          </div>
                         </div>
                         <div className="flex-grow min-w-0">
                           <p className="font-label-lg text-label-lg text-on-surface break-words">{det.nombre_snapshot}</p>

@@ -52,11 +52,10 @@ export function getCloudinaryUrl(url: string | null | undefined, width = 400, he
   const match = url.match(/\/v\d+\//);
   if (!match) return url;
 
-  const uploadIndex = match.index! + match[0].length;
-  const baseUrl = url.substring(0, uploadIndex);
-  const filename = url.substring(uploadIndex);
+  const baseUrl = url.substring(0, match.index!);
+  const rest = url.substring(match.index!);
 
-  return `${baseUrl}f_auto,q_auto,c_fill,w_${width},h_${height}/${filename}`;
+  return `${baseUrl}/f_auto,q_auto,c_fill,w_${width},h_${height}${rest}`;
 }
 
 // Colores pastel/gastronómicos para el avatar por inicial

@@ -1,7 +1,7 @@
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useProducto } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
-import { getProductImage, getCloudinaryUrl } from "@/shared/images";
+import { getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 import { ProductDetailSkeleton } from "@/shared/components/Skeleton";
 
@@ -42,12 +42,16 @@ export function ProductDetailPage() {
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-xl">
         <div className="lg:col-span-6">
-          <div className="aspect-square rounded-xl overflow-hidden bg-surface-container-high border border-outline-variant/30">
-            <img
-              src={getCloudinaryUrl(producto.imagen_url) || getProductImage(producto.id, producto.id)}
-              alt={producto.nombre}
-              className="w-full h-full object-cover"
-            />
+          <div className="aspect-square rounded-xl overflow-hidden bg-surface-container-high border border-outline-variant/30 flex items-center justify-center">
+            {getCloudinaryUrl(producto.imagen_url) ? (
+              <img
+                src={getCloudinaryUrl(producto.imagen_url)}
+                alt={producto.nombre}
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <span className="material-symbols-outlined text-6xl text-on-surface-variant/30">image</span>
+            )}
           </div>
         </div>
 

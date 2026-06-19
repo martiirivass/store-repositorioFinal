@@ -7,7 +7,7 @@ import { useCheckoutForm } from "@/features/checkout/hooks/useCheckoutForm";
 import { useCheckoutSubmit } from "@/features/checkout/hooks/useCheckoutSubmit";
 import { CheckoutSuccessScreen } from "@/features/checkout/components/CheckoutSuccessScreen";
 import { PaymentFormSection } from "@/features/checkout/components/PaymentFormSection";
-import { getProductImage, getCloudinaryUrl } from "@/shared/images";
+import { getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 
 export function CheckoutPage() {
@@ -68,7 +68,13 @@ export function CheckoutPage() {
             {items.map((item) => (
               <div key={item.producto_id} className="bg-surface-container rounded-lg p-md flex items-center gap-lg border border-outline-variant/30">
                 <div className="w-16 h-16 rounded overflow-hidden shrink-0 bg-surface-container-high">
-                  <img src={getCloudinaryUrl(item.imagen_url) || getProductImage(item.producto_id, item.producto_id)} alt={item.nombre} className="w-full h-full object-cover" />
+                  {getCloudinaryUrl(item.imagen_url) ? (
+                    <img src={getCloudinaryUrl(item.imagen_url)} alt={item.nombre} className="w-full h-full object-cover" />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="material-symbols-outlined text-xl text-on-surface-variant/30">image</span>
+                    </div>
+                  )}
                 </div>
                 <div className="flex-grow">
                   <p className="font-label-lg text-label-lg text-on-surface">{item.nombre}</p>

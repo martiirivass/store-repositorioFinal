@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useProductos, useCategorias } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
-import { HERO_IMAGE, PREMIUM_IMAGE, getProductImage, getCategoryImage, getCloudinaryUrl } from "@/shared/images";
+import { HERO_IMAGE, PREMIUM_IMAGE, getCategoryImage, getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 import type { CategoriaRead } from "../types";
 
@@ -113,12 +113,20 @@ export function HomePage() {
           {productos.map((p, idx) => (
             <div key={p.id} className="bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant hover:shadow-[0px_8px_24px_rgba(0,0,0,0.5)] transition-all group">
               <div className="relative h-64 overflow-hidden bg-surface-container-high">
-                <img
-                  src={getCloudinaryUrl(p.imagen_url) || getProductImage(p.id, idx)}
-                  alt={p.nombre}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                {getCloudinaryUrl(p.imagen_url) ? (
+                  <>
+                    <img
+                      src={getCloudinaryUrl(p.imagen_url)}
+                      alt={p.nombre}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/40 to-transparent" />
+                  </>
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <span className="material-symbols-outlined text-5xl text-on-surface-variant/30">image</span>
+                  </div>
+                )}
               </div>
               <div className="p-6">
                 <h3 className="font-title-lg text-title-lg text-white mb-2">{p.nombre}</h3>

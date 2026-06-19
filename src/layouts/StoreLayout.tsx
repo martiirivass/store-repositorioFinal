@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Outlet, Link, useNavigate } from "react-router-dom";
+import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
 import { ConnectionBadge } from "@/components/ConnectionBadge";
@@ -13,6 +13,12 @@ export function StoreLayout() {
   const checkAuth = useAuthStore((s) => s.checkAuth);
   const cartCount = useCartStore((s) => s.items.reduce((sum, i) => sum + i.cantidad, 0));
   const navigate = useNavigate();
+  const location = useLocation();
+
+  const isActive = (path: string) => {
+    if (path === "/") return location.pathname === "/";
+    return location.pathname.startsWith(path);
+  };
 
   // Verificar sesión al montar la app
   useEffect(() => {
@@ -47,12 +53,12 @@ export function StoreLayout() {
               GASTRO
             </Link>
             <nav className="hidden md:flex items-center gap-8">
-              <Link to="/" className="font-label-lg text-label-lg text-primary border-b-2 border-primary font-bold pb-1">Inicio</Link>
-              <Link to="/catalogo" className="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Catálogo</Link>
+              <Link to="/" className={`font-label-lg text-label-lg pb-1 border-b-2 transition-all ${isActive("/") ? "text-primary border-primary font-bold" : "text-on-surface-variant border-transparent hover:text-on-surface"}`}>Inicio</Link>
+              <Link to="/catalogo" className={`font-label-lg text-label-lg pb-1 border-b-2 transition-all ${isActive("/catalogo") ? "text-primary border-primary font-bold" : "text-on-surface-variant border-transparent hover:text-on-surface"}`}>Catálogo</Link>
               {isLogged && (
                 <>
-                  <Link to="/mis-pedidos" className="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Mis Pedidos</Link>
-                  <Link to="/mis-direcciones" className="font-label-lg text-label-lg text-on-surface-variant hover:text-on-surface transition-colors">Mis Direcciones</Link>
+                  <Link to="/mis-pedidos" className={`font-label-lg text-label-lg pb-1 border-b-2 transition-all ${isActive("/mis-pedidos") ? "text-primary border-primary font-bold" : "text-on-surface-variant border-transparent hover:text-on-surface"}`}>Mis Pedidos</Link>
+                  <Link to="/mis-direcciones" className={`font-label-lg text-label-lg pb-1 border-b-2 transition-all ${isActive("/mis-direcciones") ? "text-primary border-primary font-bold" : "text-on-surface-variant border-transparent hover:text-on-surface"}`}>Mis Direcciones</Link>
                 </>
               )}
             </nav>
@@ -113,24 +119,24 @@ export function StoreLayout() {
           <aside className="fixed top-20 left-0 z-50 w-72 h-[calc(100vh-5rem)] bg-surface border-r border-outline-variant/30 shadow-2xl md:hidden overflow-y-auto">
             <nav className="flex flex-col gap-1 p-lg">
               <Link to="/" onClick={closeMobile}
-                className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                className={`flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg transition-all ${isActive("/") ? "text-primary bg-primary-container/30" : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"}`}>
                 <span className="material-symbols-outlined text-xl">home</span>
                 Inicio
               </Link>
               <Link to="/catalogo" onClick={closeMobile}
-                className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                className={`flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg transition-all ${isActive("/catalogo") ? "text-primary bg-primary-container/30" : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"}`}>
                 <span className="material-symbols-outlined text-xl">storefront</span>
                 Catálogo
               </Link>
               {isLogged && (
                 <>
                   <Link to="/mis-pedidos" onClick={closeMobile}
-                    className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                    className={`flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg transition-all ${isActive("/mis-pedidos") ? "text-primary bg-primary-container/30" : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"}`}>
                     <span className="material-symbols-outlined text-xl">receipt_long</span>
                     Mis Pedidos
                   </Link>
                   <Link to="/mis-direcciones" onClick={closeMobile}
-                    className="flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface transition-all">
+                    className={`flex items-center gap-3 px-md py-lg rounded-xl font-label-lg text-label-lg transition-all ${isActive("/mis-direcciones") ? "text-primary bg-primary-container/30" : "text-on-surface-variant hover:bg-surface-container-high hover:text-on-surface"}`}>
                     <span className="material-symbols-outlined text-xl">location_on</span>
                     Mis Direcciones
                   </Link>

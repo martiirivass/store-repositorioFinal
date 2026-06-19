@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Link, useSearchParams } from "react-router-dom";
 import { useProductos, useCategorias } from "../hooks/useProducts";
 import { useCartStore } from "@/features/cart/store";
-import { getProductImage, HERO_IMAGE, getCloudinaryUrl } from "@/shared/images";
+import { HERO_IMAGE, getCloudinaryUrl } from "@/shared/images";
 import { formatARS } from "@/shared/currency";
 import { PageSkeleton } from "@/shared/components/Skeleton";
 
@@ -133,11 +133,17 @@ export function CatalogPage() {
             {(data?.data ?? []).map((p, idx) => (
               <div key={p.id} className="group bg-surface-container-low rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col">
                 <Link to={`/producto/${p.id}`} className="relative aspect-square overflow-hidden bg-surface-container-high block">
-                  <img
-                    src={getCloudinaryUrl(p.imagen_url) || getProductImage(p.id, idx)}
-                    alt={p.nombre}
-                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  />
+                  {getCloudinaryUrl(p.imagen_url) ? (
+                    <img
+                      src={getCloudinaryUrl(p.imagen_url)}
+                      alt={p.nombre}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center">
+                      <span className="material-symbols-outlined text-5xl text-on-surface-variant/30">image</span>
+                    </div>
+                  )}
                 </Link>
                 <div className="p-lg flex flex-col flex-1">
                   <div className="flex justify-between items-start mb-xs gap-sm">
