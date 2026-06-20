@@ -25,7 +25,7 @@ export function CatalogPage() {
   const addItem = useCartStore((s) => s.addItem);
   const totalPages = data ? Math.ceil(data.total / limit) : 0;
 
-  // Debounce: commit search 300ms after user stops typing
+ 
   useEffect(() => {
     const timer = setTimeout(() => {
       if (searchInput !== search) {
@@ -126,7 +126,7 @@ export function CatalogPage() {
       ) : (
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-gutter">
-            {(data?.data ?? []).map((p, idx) => (
+            {(data?.data ?? []).map((p) => (
               <div key={p.id} className="group bg-surface-container-low rounded-lg overflow-hidden border border-outline-variant hover:border-primary transition-all duration-300 shadow-sm hover:shadow-xl flex flex-col">
                 <Link to={`/producto/${p.id}`} className="relative aspect-square overflow-hidden bg-surface-container-high block">
                   {getCloudinaryUrl(p.imagen_url) ? (

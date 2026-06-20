@@ -58,7 +58,7 @@ http://localhost:5173
 Crear archivo `.env`:
 
 ```env
-VITE_API_URL=http://localhost:3000
+VITE_API_URL=http://localhost:8000
 ```
 
 ---
@@ -67,40 +67,30 @@ VITE_API_URL=http://localhost:3000
 
 ```txt
 src/
-├── assets/
+├── components/
+│   └── ConnectionBadge.tsx
 ├── features/
-│   ├── products/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── types.ts
-│   │
+│   ├── auth/
 │   ├── cart/
-│   │   ├── components/
-│   │   ├── hooks/
-│   │   ├── pages/
-│   │   ├── services/
-│   │   └── types.ts
-│
-├── shared/
-│   ├── ui/
-│   └── layout/
-│
-├── store/
-│   └── useCartStore.ts
-│
+│   ├── checkout/
+│   ├── contact/
+│   ├── direcciones/
+│   ├── orders/
+│   ├── pagos/
+│   └── products/
+├── hooks/
+│   └── useOrderStatusWS.ts
+├── layouts/
+│   └── StoreLayout.tsx
 ├── router/
 │   └── index.tsx
-│
-├── lib/
-│   ├── axios.ts
-│   └── queryClient.ts
-│
-├── hooks/
-├── types/
-├── utils/
-│
+├── shared/
+│   ├── api.ts
+│   ├── components/
+│   ├── currency.ts
+│   └── images.ts
+├── store/
+│   └── wsStore.ts
 └── main.tsx
 ```
 
@@ -110,9 +100,16 @@ src/
 
 | Pantalla | Ruta |
 |---|---|
-| Listado de productos | / |
-| Detalle de producto | /product/:id |
-| Carrito | /cart |
+| Inicio | / |
+| Catálogo | /catalogo |
+| Detalle de producto | /producto/:id |
+| Carrito | /carrito |
+| Login / Registro | /login |
+| Checkout | /checkout |
+| Pago | /pagar/:id |
+| Mis Pedidos | /mis-pedidos |
+| Mis Direcciones | /mis-direcciones |
+| Contacto | /contacto |
 
 ---
 
@@ -121,22 +118,17 @@ src/
 ## ✅ Completado
 
 - Setup inicial con React + TypeScript + Vite
-- Configuración de Tailwind CSS
-- Configuración de React Router
-- Configuración de TanStack Query
-- Configuración de Axios
-- Configuración de Zustand
-- Estructura modular por features
-
----
-
-## 🚧 En desarrollo
-
-- Listado de productos
+- Catálogo con búsqueda, debounce, filtros por categoría y paginación
 - Detalle de producto
-- Carrito
-- Checkout
-- Integración con backend
+- Carrito con badge de cantidad
+- Checkout con selección de forma de pago y dirección
+- Integración con Mercado Pago (init_point redirect)
+- Historial de pedidos con timeline de estados
+- WebSocket para actualización en tiempo real de estados
+- Gestión de direcciones de entrega
+- Autenticación (login/registro)
+- Conexión persistente con backend vía Axios + TanStack Query
+- Skeleton loaders en todas las pantallas
 
 ---
 

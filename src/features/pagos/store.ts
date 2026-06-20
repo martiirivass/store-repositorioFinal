@@ -1,5 +1,6 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
+import axios from "axios";
 import { pagoService } from "./services/pagoService";
 
 type PaymentStatus = "pending" | "approved" | "rejected" | "in_progress";
@@ -36,11 +37,11 @@ export const usePaymentStore = create<PaymentStore>()(
             paymentUrl: response.init_point,
             isLoading: false,
           });
-        } catch (err: any) {
-          const detail = err?.response?.data?.detail;
+        } catch (err: unknown) {
+          const detail = axios.isAxiosError(err) ? (err.response?.data as Record<string, unknown> | undefined)?.detail : undefined;
           const message = Array.isArray(detail)
-            ? detail.map((d: any) => d.msg).join("; ")
-            : detail || "Error al crear el pago";
+            ? detail.map((d) => String(d && typeof d === "object" && "msg" in d ? d.msg : "")).join("; ")
+            : typeof detail === "string" ? detail : "Error al crear el pago";
           set({ error: message, isLoading: false });
         }
       },
@@ -54,11 +55,11 @@ export const usePaymentStore = create<PaymentStore>()(
             paymentId: response.pedido_id,
             isLoading: false,
           });
-        } catch (err: any) {
-          const detail = err?.response?.data?.detail;
+        } catch (err: unknown) {
+          const detail = axios.isAxiosError(err) ? (err.response?.data as Record<string, unknown> | undefined)?.detail : undefined;
           const message = Array.isArray(detail)
-            ? detail.map((d: any) => d.msg).join("; ")
-            : detail || "Error al verificar el pago";
+            ? detail.map((d) => String(d && typeof d === "object" && "msg" in d ? d.msg : "")).join("; ")
+            : typeof detail === "string" ? detail : "Error al verificar el pago";
           set({ error: message, isLoading: false });
         }
       },

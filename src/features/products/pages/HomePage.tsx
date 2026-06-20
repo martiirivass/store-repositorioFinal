@@ -110,7 +110,7 @@ export function HomePage() {
           </Link>
         </div>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {productos.map((p, idx) => (
+          {productos.map((p) => (
             <div key={p.id} className="bg-surface-container-low rounded-xl overflow-hidden border border-outline-variant hover:shadow-[0px_8px_24px_rgba(0,0,0,0.5)] transition-all group">
               <div className="relative h-64 overflow-hidden bg-surface-container-high">
                 {getCloudinaryUrl(p.imagen_url) ? (

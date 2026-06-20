@@ -1,9 +1,8 @@
 import { useNavigate } from "react-router-dom";
 import { useMisPedidos, useCancelarPedido } from "../hooks/usePedidos";
-import type { DetallePedidoRead } from "../types";
 import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
-import { useOrderStatusWS } from "@/hooks/useOrderStatusWS";
+import { useOrderStatusWS } from "@/hooks/useOrderStatus";
 import { Skeleton } from "@/shared/components/Skeleton";
 
 const ESTADOS: Record<string, { label: string; color: string }> = {

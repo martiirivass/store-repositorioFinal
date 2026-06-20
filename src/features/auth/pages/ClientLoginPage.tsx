@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 import { useAuthStore } from "@/features/auth/store";
 
 export function ClientLoginPage() {
@@ -23,11 +24,11 @@ export function ClientLoginPage() {
         await login(email, password);
       }
       navigate("/");
-    } catch (err: any) {
-      const detail = err?.response?.data?.detail;
+    } catch (err: unknown) {
+      const detail = axios.isAxiosError(err) ? (err.response?.data as Record<string, unknown> | undefined)?.detail : undefined;
       const msg = Array.isArray(detail)
-        ? detail.map((d: any) => d.msg).join("; ")
-        : detail || "Error de autenticación";
+        ? detail.map((d) => String(d && typeof d === "object" && "msg" in d ? d.msg : "")).join("; ")
+        : typeof detail === "string" ? detail : "Error de autenticación";
       setError(msg);
     } finally {
       setLoading(false);
