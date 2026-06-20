@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import axios from "axios";
 import { useCartStore } from "@/features/cart/store";
 import { checkoutService } from "@/features/checkout/services/checkoutService";
 import type { CartItem } from "@/features/cart/store";
@@ -63,11 +64,11 @@ export function useCheckoutSubmit() {
         formaPago: params.formaPago,
       });
       setShowSuccess(true);
-    } catch (err: any) {
-      const detail = err?.response?.data?.detail;
+    } catch (err: unknown) {
+      const detail = axios.isAxiosError(err) ? (err.response?.data as Record<string, unknown> | undefined)?.detail : undefined;
       const msg = Array.isArray(detail)
-        ? detail.map((d: any) => d.msg).join("; ")
-        : detail || "Error al crear el pedido";
+        ? detail.map((d) => String(d && typeof d === "object" && "msg" in d ? d.msg : "")).join("; ")
+        : typeof detail === "string" ? detail : "Error al crear el pedido";
       onError(msg);
     }
   };
