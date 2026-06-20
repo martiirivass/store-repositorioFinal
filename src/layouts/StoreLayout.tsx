@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { Outlet, Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuthStore } from "@/features/auth/store";
 import { useCartStore } from "@/features/cart/store";
-import { ConnectionBadge } from "@/components/ConnectionBadge";
 
 export function StoreLayout() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -72,9 +71,7 @@ export function StoreLayout() {
                 </span>
               )}
             </Link>
-            <div className="hidden sm:flex mr-2">
-              <ConnectionBadge />
-            </div>
+
 
             {/* Hamburger — mobile only */}
             <button

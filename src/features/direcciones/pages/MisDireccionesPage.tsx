@@ -15,8 +15,8 @@ import { DireccionForm } from "@/features/direcciones/components/DireccionForm";
 
 export function MisDireccionesPage() {
   const { data: direcciones, isLoading } = useDirecciones();
-  const { mutate: crearDireccion, isPending: isCreating } = useCrearDireccion();
-  const { mutate: actualizarDireccion, isPending: isUpdating } = useActualizarDireccion();
+  const { mutateAsync: crearDireccion, isPending: isCreating } = useCrearDireccion();
+  const { mutateAsync: actualizarDireccion, isPending: isUpdating } = useActualizarDireccion();
   const { mutate: eliminarDireccion } = useEliminarDireccion();
   const { mutate: marcarPrincipal } = useMarcarPrincipal();
   const { isLogged } = useAuthStore();
@@ -37,14 +37,17 @@ export function MisDireccionesPage() {
     setShowForm(true);
   };
 
-  const handleFormSubmit = (data: DireccionCreate) => {
-    if (editingDireccion) {
-      actualizarDireccion(
-        { id: editingDireccion.id, data },
-        { onSuccess: () => { setShowForm(false); setEditingDireccion(undefined); } },
-      );
-    } else {
-      crearDireccion(data, { onSuccess: () => setShowForm(false) });
+  const handleFormSubmit = async (data: DireccionCreate) => {
+    try {
+      if (editingDireccion) {
+        await actualizarDireccion({ id: editingDireccion.id, data });
+        setEditingDireccion(undefined);
+      } else {
+        await crearDireccion(data);
+      }
+      setShowForm(false);
+    } catch {
+      // Error toast could go here
     }
   };
 

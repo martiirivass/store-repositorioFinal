@@ -71,33 +71,29 @@ export function CatalogPage() {
         </div>
       </section>
 
-      <div className="mb-xl flex gap-sm">
-        <div className="relative flex-1 max-w-md">
+      <div className="mb-xl flex max-w-md w-full">
+        <div className="relative flex-1">
           <input type="text"
             ref={inputRef}
-            value={searchInput} onChange={(e) => { setSearchInput(e.target.value); }}
+            value={searchInput}
+            onChange={(e) => { setSearchInput(e.target.value); }}
             onKeyDown={handleSearchKeyDown}
-            className="w-full bg-surface-container-low border border-outline-variant/40 rounded-lg pl-lg pr-xl py-md font-body-lg text-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all"
-            placeholder="Buscar por nombre..." />
+            className="bg-surface-container-low border border-outline-variant/40 rounded-l-lg pl-lg pr-2xl py-md text-on-surface caret-on-surface placeholder:text-on-surface-variant/40 focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 border-r-0"
+            placeholder="Buscar productos" />
           {searchInput && (
             <button onClick={() => { setSearchInput(""); setSearch(""); setPage(0); inputRef.current?.focus(); }}
-              className="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors">
-              <span className="material-symbols-outlined text-xl">close</span>
+              className="absolute right-2 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-on-surface transition-colors z-20 flex items-center justify-center w-8 h-8">
+              <span className="material-symbols-outlined text-xl block leading-none">close</span>
             </button>
           )}
         </div>
         <button
           onClick={triggerSearch}
-          className="bg-primary text-on-primary px-lg py-md rounded-lg font-label-lg hover:brightness-110 transition-all active:scale-95"
+          className="bg-primary text-on-primary px-xl rounded-r-lg hover:brightness-110 transition-all active:scale-95 border border-outline-variant/40 flex items-center py-md"
         >
-          <span className="material-symbols-outlined">search</span>
+          <span className="material-symbols-outlined block leading-none">search</span>
         </button>
       </div>
-      {search && (
-        <p className="font-body-md text-body-md text-on-surface-variant mb-md -mt-lg">
-          Resultados para: <span className="text-on-surface font-medium">&ldquo;{search}&rdquo;</span>
-        </p>
-      )}
 
       <div className="flex flex-wrap gap-sm mb-xl">
         <button
