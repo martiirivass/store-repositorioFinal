@@ -1,5 +1,5 @@
 # Food Store — Cliente (store-app)
-
+## VIDEO TPI : https://drive.google.com/file/d/1ZFp8-i0vOOvbBeB_6OVomRVmfqp7RQS-/view?usp=sharing
 Frontend de la tienda para el cliente final. Permite navegar el catálogo, ver el detalle de productos con ingredientes, agregar al carrito y confirmar pedidos.
 
 Este repositorio corresponde únicamente al cliente público del sistema.
